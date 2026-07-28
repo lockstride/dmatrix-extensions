@@ -1,0 +1,66 @@
+DMATRIX EXTENSIONS LICENSE
+
+Copyright (c) 2026 Oxford Heavy Industries, LLC. All rights reserved.
+
+dMatrix is a product of Lockstride, a division of Oxford Heavy Industries, LLC
+("Oxford Heavy Industries").
+
+This repository contains the client-side extensions — plugins, skills, prompts,
+manifests, and brand assets — that connect third-party AI assistants to the
+dMatrix service (collectively, the "Extensions").
+
+1. GRANT OF USE
+
+Oxford Heavy Industries grants you a personal, non-exclusive, non-transferable,
+revocable, royalty-free license to download, install, and use the Extensions for
+the sole purpose of connecting an AI assistant to the dMatrix service through
+your own dMatrix account.
+
+2. RESTRICTIONS
+
+Except as expressly permitted in Section 1, you may not:
+
+  (a) copy, publish, distribute, or redistribute the Extensions, in whole or in
+      part, whether or not for a fee;
+  (b) modify the Extensions or create derivative works from them;
+  (c) sublicense, sell, rent, lease, or otherwise transfer the Extensions;
+  (d) use the canonical prompt, skill instructions, or any other text in this
+      repository to build, train, operate, or promote any product or service
+      other than dMatrix; or
+  (e) remove or alter any copyright, trademark, or other proprietary notice.
+
+3. TRADEMARKS
+
+"dMatrix", "Lockstride", "Oxford Heavy Industries", the dM mark, and the logos
+and icons in this repository (including those under `assets/` and
+`skills/decide/assets/`) are trademarks of Oxford Heavy Industries. They are not
+licensed under this agreement, and no right to use them is granted by
+implication, estoppel, or otherwise. You may not use them to identify, brand, or
+promote any product or service other than dMatrix.
+
+4. RESERVATION OF RIGHTS
+
+All rights not expressly granted are reserved. The Extensions are licensed, not
+sold. Nothing in this agreement transfers ownership of any intellectual property.
+
+5. SERVICE DEPENDENCE AND TERMINATION
+
+The Extensions require an active dMatrix account and are subject to the dMatrix
+terms of service. This license terminates automatically if you breach any of its
+terms. On termination you must stop using the Extensions and delete all copies.
+
+6. THIRD-PARTY COMPONENTS
+
+Third-party components referenced by or distributed with the Extensions remain
+subject to their own respective licenses.
+
+7. DISCLAIMER AND LIMITATION OF LIABILITY
+
+THE EXTENSIONS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL OXFORD HEAVY
+INDUSTRIES BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN
+ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION
+WITH THE EXTENSIONS OR THE USE OR OTHER DEALINGS IN THE EXTENSIONS.
+
+Licensing inquiries: hello@lockstride.ai

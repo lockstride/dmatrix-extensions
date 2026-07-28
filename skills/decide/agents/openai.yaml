@@ -1,0 +1,16 @@
+# UI metadata for the decide Skill on OpenAI surfaces (ChatGPT web, Codex).
+# Non-OpenAI hosts ignore this file; SKILL.md remains the behaviour source.
+interface:
+  display_name: dMatrix Decision Capture
+  short_description: Capture decisions as structured, auditable matrices — options, criteria, weights, scores, and provenance.
+  icon_small: assets/icon-small.png
+  icon_large: assets/icon.png
+  brand_color: "#3B82F6"
+  default_prompt: Help me weigh my options and capture the decision in dMatrix
+policy:
+  products:
+    - chatgpt
+    - codex
+    - api
+    - atlas
+  allow_implicit_invocation: true

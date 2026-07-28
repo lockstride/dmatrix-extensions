@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-590.999011,-3214.370502)">
+        <g transform="matrix(1,0,0,1,-54.000989,-477.629498)">
+            <g id="Cutting-Mask" serif:id="Cutting Mask" transform="matrix(32,0,0,32,-18299,-102452)">
+                <path d="M608,3319.329L608,3330.671C608,3331.956 606.956,3333 605.671,3333L594.329,3333C593.044,3333 592,3331.956 592,3330.671L592,3319.329C592,3318.044 593.044,3317 594.329,3317L605.671,3317C606.956,3317 608,3318.044 608,3319.329Z" style="fill:none;"/>
+                <clipPath id="_clip1">
+                    <path d="M608,3319.329L608,3330.671C608,3331.956 606.956,3333 605.671,3333L594.329,3333C593.044,3333 592,3331.956 592,3330.671L592,3319.329C592,3318.044 593.044,3317 594.329,3317L605.671,3317C606.956,3317 608,3318.044 608,3319.329Z"/>
+                </clipPath>
+                <g clip-path="url(#_clip1)">
+                    <rect x="592" y="3317" width="16" height="16" style="fill:rgb(0,26,37);"/>
+                    <g id="Grid" transform="matrix(0.026667,0,0,0.026667,575.973333,3219.72)">
+                        <g transform="matrix(1.346296,0,0,1.346296,1698.372426,-1912.405491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1698.372426,-1863.938825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1698.372426,-1815.472158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1698.372426,-1767.005491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1698.372426,-1718.538825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1698.372426,-1670.072158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1698.372426,-1621.605491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1698.372426,-1573.138825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1698.372426,-1524.672158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1698.372426,-1476.205491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1698.372426,-1427.738825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1698.372426,-1379.272158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1698.372426,-1330.805491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1754.916871,-1912.405491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1754.916871,-1863.938825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1754.916871,-1815.472158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1754.916871,-1767.005491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1754.916871,-1718.538825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1754.916871,-1670.072158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1754.916871,-1621.605491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1754.916871,-1573.138825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1754.916871,-1524.672158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1754.916871,-1476.205491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1754.916871,-1427.738825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1754.916871,-1379.272158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1754.916871,-1330.805491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1811.461315,-1912.405491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1811.461315,-1863.938825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1811.461315,-1815.472158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1811.461315,-1767.005491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1811.461315,-1718.538825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1811.461315,-1670.072158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1811.461315,-1621.605491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1811.461315,-1573.138825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1811.461315,-1524.672158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1811.461315,-1476.205491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1811.461315,-1427.738825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1811.461315,-1379.272158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1811.461315,-1330.805491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1868.00576,-1912.405491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1868.00576,-1863.938825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1868.00576,-1815.472158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1868.00576,-1767.005491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1868.00576,-1718.538825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1868.00576,-1670.072158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1868.00576,-1621.605491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1868.00576,-1573.138825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1868.00576,-1524.672158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1868.00576,-1476.205491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1868.00576,-1427.738825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1868.00576,-1379.272158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1868.00576,-1330.805491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1924.550204,-1912.405491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1924.550204,-1863.938825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1924.550204,-1815.472158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1924.550204,-1767.005491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1924.550204,-1718.538825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1924.550204,-1670.072158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1924.550204,-1621.605491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1924.550204,-1573.138825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1924.550204,-1524.672158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1924.550204,-1476.205491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1924.550204,-1427.738825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1924.550204,-1379.272158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1924.550204,-1330.805491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1981.094649,-1912.405491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1981.094649,-1863.938825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1981.094649,-1815.472158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1981.094649,-1767.005491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1981.094649,-1718.538825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1981.094649,-1670.072158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1981.094649,-1621.605491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1981.094649,-1573.138825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1981.094649,-1524.672158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1981.094649,-1476.205491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1981.094649,-1427.738825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1981.094649,-1379.272158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,1981.094649,-1330.805491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2037.639093,-1912.405491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2037.639093,-1863.938825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2037.639093,-1815.472158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2037.639093,-1767.005491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2037.639093,-1718.538825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2037.639093,-1670.072158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2037.639093,-1621.605491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2037.639093,-1573.138825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2037.639093,-1524.672158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2037.639093,-1476.205491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2037.639093,-1427.738825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2037.639093,-1379.272158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2037.639093,-1330.805491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2094.183537,-1912.405491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2094.183537,-1863.938825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2094.183537,-1815.472158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2094.183537,-1767.005491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2094.183537,-1718.538825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2094.183537,-1670.072158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2094.183537,-1621.605491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2094.183537,-1573.138825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2094.183537,-1524.672158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2094.183537,-1476.205491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2094.183537,-1427.738825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2094.183537,-1379.272158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2094.183537,-1330.805491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2150.727982,-1912.405491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2150.727982,-1863.938825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2150.727982,-1815.472158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2150.727982,-1767.005491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2150.727982,-1718.538825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2150.727982,-1670.072158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2150.727982,-1621.605491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2150.727982,-1573.138825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2150.727982,-1524.672158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2150.727982,-1476.205491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2150.727982,-1427.738825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2150.727982,-1379.272158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2150.727982,-1330.805491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2207.272426,-1912.405491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2207.272426,-1863.938825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2207.272426,-1815.472158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2207.272426,-1767.005491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2207.272426,-1718.538825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2207.272426,-1670.072158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2207.272426,-1621.605491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2207.272426,-1573.138825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2207.272426,-1524.672158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2207.272426,-1476.205491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2207.272426,-1427.738825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2207.272426,-1379.272158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2207.272426,-1330.805491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2263.816871,-1912.405491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2263.816871,-1863.938825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2263.816871,-1815.472158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2263.816871,-1767.005491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2263.816871,-1718.538825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2263.816871,-1670.072158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2263.816871,-1621.605491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2263.816871,-1573.138825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2263.816871,-1524.672158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2263.816871,-1476.205491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2263.816871,-1427.738825)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2263.816871,-1379.272158)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                        <g transform="matrix(1.346296,0,0,1.346296,2263.816871,-1330.805491)">
+                            <rect x="-826" y="4118" width="42" height="36" style="fill:none;stroke:rgb(0,155,219);stroke-opacity:0.4;stroke-width:0.36px;"/>
+                        </g>
+                    </g>
+                    <g transform="matrix(0.035903,0,0,0.035903,567.495146,3183.254954)">
+                        <g transform="matrix(6.478595,0,0,6.478595,-3911.525733,-3490.728116)">
+                            <g transform="matrix(1.36,0,-0.087489,1,-152.253503,0)">
+                                <g transform="matrix(50,0,0,50,731.072913,1165.508099)">
+                                </g>
+                                <text x="706.173px" y="1165.508px" style="font-family:'BarlowSemiCondensed-SemiBold', 'Barlow Semi Condensed';font-weight:600;font-stretch:semi-condensed;font-size:50px;fill:rgb(20,155,219);">d</text>
+                            </g>
+                        </g>
+                        <g id="_5-deg-half" serif:id="5 deg half" transform="matrix(0.919101,0,0,0.919101,808.647103,978.648114)">
+                            <g transform="matrix(1,0,0,1,-1.169495,0.805679)">
+                                <path d="M274.257,3179.165C274.015,3179.315 273.767,3179.534 273.512,3179.82L223.277,3241.508C221.985,3243.388 219.929,3244.328 217.109,3244.328L209.072,3244.328C206.252,3244.328 204.36,3243.388 203.396,3241.508L163.924,3180.173C163.422,3179.468 162.884,3179.174 162.31,3179.292C161.735,3179.409 161.407,3179.938 161.325,3180.878L146.738,3347.61C146.635,3348.785 146.054,3349.784 144.995,3350.607C143.936,3351.429 142.701,3351.84 141.291,3351.84L102.375,3351.84C100.965,3351.84 99.803,3351.429 98.888,3350.607C97.973,3349.784 97.567,3348.785 97.67,3347.61L118.517,3109.32C118.62,3108.145 119.201,3107.147 120.26,3106.324C121.319,3105.502 122.553,3105.09 123.963,3105.09L162.879,3105.09C165.699,3105.09 167.591,3106.03 168.555,3107.91L217.522,3181.583C218.245,3182.993 219.091,3182.993 220.06,3181.583L281.073,3107.91C282.365,3106.03 284.421,3105.09 287.241,3105.09L326.58,3105.09C327.99,3105.09 329.153,3105.502 330.068,3106.324C330.932,3107.101 331.342,3108.035 331.299,3109.125L328.682,3112.347L328.682,3112.835L331.3,3109.216L331.302,3109.32L331.302,3347.61C331.302,3348.785 330.808,3349.784 329.821,3350.607C328.834,3351.429 327.636,3351.84 326.226,3351.84L287.31,3351.84C285.9,3351.84 284.701,3351.429 283.714,3350.607C282.727,3349.784 282.234,3348.785 282.234,3347.61L282.234,3181.372C282.264,3181.073 282.263,3180.774 282.234,3180.482C282.229,3179.946 282.129,3179.548 281.936,3179.286C281.772,3178.888 281.547,3178.517 281.266,3178.192C281.158,3178.052 281.034,3177.926 280.895,3177.817C280.67,3177.619 280.418,3177.445 280.142,3177.301C279.646,3177.041 279.116,3176.901 278.584,3176.871C278.49,3176.864 278.395,3176.861 278.299,3176.861C277.423,3176.861 276.619,3177.142 275.994,3177.608C275.753,3177.772 275.526,3177.961 275.316,3178.174L274.257,3179.165Z" style="fill:white;"/>
+                            </g>
+                            <g transform="matrix(1,0,0,0.958816,0,128.239491)">
+                                <rect x="327.068" y="3109.682" width="3.065" height="4.145" style="fill:white;"/>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

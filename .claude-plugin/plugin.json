@@ -1,0 +1,23 @@
+{
+  "name": "dmatrix",
+  "displayName": "dMatrix Decision Capture",
+  "version": "1.0.0",
+  "description": "dMatrix decision-capture Skill for Chat-to-Matrix — structured decision matrices from natural conversation",
+  "icon": "./assets/dmatrix-icon.png",
+  "author": {
+    "name": "Lockstride",
+    "email": "hello@lockstride.ai",
+    "url": "https://lockstride.ai"
+  },
+  "homepage": "https://github.com/lockstride/dmatrix-extensions",
+  "repository": "https://github.com/lockstride/dmatrix-extensions",
+  "license": "LicenseRef-dMatrix-Proprietary",
+  "keywords": [
+    "decision-making",
+    "matrix",
+    "mcp",
+    "decision-capture",
+    "structured-decisions"
+  ],
+  "mcpServers": "./.mcp.json"
+}

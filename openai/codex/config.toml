@@ -1,0 +1,6 @@
+# dMatrix MCP server — merge into ~/.codex/config.toml (global) or .codex/config.toml (project).
+[mcp_servers.dmatrix]
+url = "https://mcp.dmatrix.com/mcp"
+
+[mcp_servers.dmatrix.oauth]
+client_id = "dmatrix-codex-plugin-v1"

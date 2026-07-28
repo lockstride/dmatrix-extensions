@@ -1,0 +1,41 @@
+{
+  "name": "dmatrix",
+  "version": "1.0.0",
+  "description": "dMatrix decision-capture Skill for Chat-to-Matrix — structured decision matrices from natural conversation",
+  "author": {
+    "name": "Lockstride",
+    "email": "hello@lockstride.ai",
+    "url": "https://lockstride.ai"
+  },
+  "homepage": "https://github.com/lockstride/dmatrix-extensions",
+  "repository": "https://github.com/lockstride/dmatrix-extensions",
+  "license": "LicenseRef-dMatrix-Proprietary",
+  "keywords": [
+    "decision-making",
+    "matrix",
+    "mcp",
+    "decision-capture",
+    "structured-decisions"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.codex-mcp.json",
+  "interface": {
+    "displayName": "dMatrix Decision Capture",
+    "shortDescription": "Capture decisions as structured matrices",
+    "longDescription": "dMatrix notices when you're weighing alternatives and offers to capture the decision as a structured, auditable decision matrix — options, criteria, weights, scores, and provenance — saved to your dMatrix account.",
+    "developerName": "Lockstride",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://dmatrix.com",
+    "defaultPrompt": [
+      "Help me weigh my options and capture the decision in dMatrix"
+    ],
+    "brandColor": "#3B82F6",
+    "logo": "./assets/dmatrix-logo.png",
+    "logoDark": "./assets/dmatrix-logo.png",
+    "composerIcon": "./assets/dmatrix-icon.png"
+  }
+}

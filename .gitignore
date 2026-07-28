@@ -1,0 +1,7 @@
+# decide.zip is a build-local artifact (rendered by the master repo's
+# extensions:build) shipped only as a GitHub release asset. It must never be
+# committed: claude.ai's plugin installer rejects archives inside the bundle
+# ("Nested zip files are not allowed") and its marketplace sync then silently
+# freezes on the last zip-free commit.
+openai/decide.zip
+.DS_Store
