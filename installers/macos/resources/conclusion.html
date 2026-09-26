@@ -4,30 +4,37 @@
     <meta charset="utf-8" />
     <title>dMatrix</title>
   </head>
-  <body style="font-family: -apple-system, system-ui, sans-serif; font-size: 13px">
+  <body
+    style="font-family: -apple-system, system-ui, sans-serif; font-size: 13px"
+  >
     <p>
-      <b>Done.</b> A notification just told you which clients were set up. The full
-      per-client result is in:
+      <b>Done.</b> A notification just told you which clients were set up. The
+      full per-client result is in:
     </p>
     <p><code>/Library/Application&nbsp;Support/dMatrix/install.log</code></p>
     <p>
-      Start a new session in any of them and dMatrix will offer to capture a decision.
-      Claude Code sessions that are already open need <code>/reload-plugins</code>; the
-      ChatGPT desktop app needs a restart.
+      Start a new session in any of them and dMatrix will offer to capture a
+      decision. Claude Code sessions that are already open need
+      <code>/reload-plugins</code>; the ChatGPT desktop app needs a restart.
     </p>
     <p>
-      The Claude app and claude.ai, and ChatGPT on the web, install against your account
-      and take a few clicks each:<br />
-      <code>github.com/lockstride/dmatrix-extensions/blob/main/claude/README.md</code><br />
-      <code>github.com/lockstride/dmatrix-extensions/blob/main/openai/README.md</code>
+      The Claude app and claude.ai, and ChatGPT on the web, install against your
+      account and take a few clicks each:<br />
+      <code
+        >github.com/lockstride/dmatrix-extensions/blob/main/claude/README.md</code
+      ><br />
+      <code
+        >github.com/lockstride/dmatrix-extensions/blob/main/openai/README.md</code
+      >
     </p>
     <p>
-      <b>To remove everything this installed</b>, run these in Terminal. The first is
-      deliberately not <code>sudo</code> &mdash; it removes the plugin and the daily check
-      from <i>your</i> account, which is where they live:
+      <b>To remove everything this installed</b>, run these in Terminal. The
+      first is deliberately not <code>sudo</code> &mdash; it removes the plugin
+      and the daily check from <i>your</i> account, which is where they live:
     </p>
     <p>
-      <code>"/Library/Application Support/dMatrix/install.sh" --uninstall</code><br />
+      <code>"/Library/Application Support/dMatrix/install.sh" --uninstall</code
+      ><br />
       <code>sudo pkgutil --forget com.dmatrix.extensions</code><br />
       <code>sudo rm -rf "/Library/Application Support/dMatrix"</code>
     </p>
