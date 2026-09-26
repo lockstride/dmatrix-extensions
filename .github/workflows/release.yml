@@ -1,0 +1,274 @@
+name: Release
+
+# Runs in the dmatrix-extensions repo, where this file is rendered from
+# packages/canonical-prompt/src/installers/workflows/release.yml in the dMatrix monorepo.
+# Edit it there; a change made here is overwritten by the next `pnpm extensions:build`.
+#
+# A `dmatrix--v*` tag (what `claude plugin tag` creates) builds both native installers on
+# their own runners and publishes them, the two install scripts, the packaged Skill, and
+# their checksums as release assets. Asset names are stable and carry no version, because
+# the site and the guides link `releases/latest/download/<asset>` — the version lives
+# inside each artifact and on the tag.
+#
+# Signing is conditional, not optional-forever: every signing step is written out but runs
+# only when its secrets are present, so a tag pushed before the signing identities exist
+# publishes unsigned assets with a visible note, and the identical workflow publishes
+# signed ones the day the secrets are set. The secret names are listed in the dMatrix
+# repo's extensions-update skill so whoever provisions them knows what to call them.
+on:
+  push:
+    tags:
+      - "dmatrix--v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to build and publish (defaults to the current ref)"
+        required: false
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  macos:
+    name: Build dmatrix.pkg
+    runs-on: macos-latest
+    permissions:
+      contents: read
+    outputs:
+      signed: ${{ steps.build.outputs.signed }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Secrets reach the shell as env, never as ${{ }} inside a run block, and each
+      # signing step is gated on its own env being non-empty rather than on a flag someone
+      # has to remember to flip.
+      - name: Build, sign, and notarize
+        id: build
+        env:
+          INSTALLER_P12: ${{ secrets.APPLE_DEVELOPER_ID_INSTALLER_P12 }}
+          INSTALLER_P12_PASSWORD: ${{ secrets.APPLE_DEVELOPER_ID_INSTALLER_P12_PASSWORD }}
+          INSTALLER_IDENTITY: ${{ secrets.APPLE_DEVELOPER_ID_INSTALLER_IDENTITY }}
+          APPLICATION_P12: ${{ secrets.APPLE_DEVELOPER_ID_APPLICATION_P12 }}
+          APPLICATION_P12_PASSWORD: ${{ secrets.APPLE_DEVELOPER_ID_APPLICATION_P12_PASSWORD }}
+          NOTARY_KEY: ${{ secrets.APPLE_NOTARY_API_KEY_P8 }}
+          NOTARY_KEY_ID: ${{ secrets.APPLE_NOTARY_API_KEY_ID }}
+          NOTARY_ISSUER_ID: ${{ secrets.APPLE_NOTARY_API_ISSUER_ID }}
+        run: |
+          set -eu
+          sh installers/macos/build-pkg.sh
+          test -f dist/installers/dmatrix.pkg
+
+          if [ -z "${INSTALLER_P12}" ] || [ -z "${INSTALLER_IDENTITY}" ]; then
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No Apple signing identity configured — publishing an unsigned package."
+            exit 0
+          fi
+
+          # A throwaway keychain, unlocked only for this job. The login keychain is not
+          # touched, and nothing survives the runner.
+          keychain="${RUNNER_TEMP}/signing.keychain-db"
+          keychain_password="$(uuidgen)"
+          security create-keychain -p "$keychain_password" "$keychain"
+          security set-keychain-settings -lut 3600 "$keychain"
+          security unlock-keychain -p "$keychain_password" "$keychain"
+          security list-keychains -d user -s "$keychain" "$(security default-keychain -d user | tr -d '" ')"
+
+          printf '%s' "$INSTALLER_P12" | base64 --decode > "${RUNNER_TEMP}/installer.p12"
+          security import "${RUNNER_TEMP}/installer.p12" -k "$keychain" \
+            -P "${INSTALLER_P12_PASSWORD}" -T /usr/bin/productsign -T /usr/bin/codesign
+          rm -f "${RUNNER_TEMP}/installer.p12"
+
+          # Only needed once the package carries a compiled binary — the payload is a shell
+          # script today — but imported when present so adding one needs no workflow change.
+          if [ -n "${APPLICATION_P12}" ]; then
+            printf '%s' "$APPLICATION_P12" | base64 --decode > "${RUNNER_TEMP}/application.p12"
+            security import "${RUNNER_TEMP}/application.p12" -k "$keychain" \
+              -P "${APPLICATION_P12_PASSWORD}" -T /usr/bin/codesign
+            rm -f "${RUNNER_TEMP}/application.p12"
+          fi
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$keychain_password" "$keychain"
+
+          productsign --sign "$INSTALLER_IDENTITY" --keychain "$keychain" \
+            dist/installers/dmatrix.pkg dist/installers/dmatrix-signed.pkg
+          mv dist/installers/dmatrix-signed.pkg dist/installers/dmatrix.pkg
+          pkgutil --check-signature dist/installers/dmatrix.pkg
+
+          if [ -n "${NOTARY_KEY}" ] && [ -n "${NOTARY_KEY_ID}" ] && [ -n "${NOTARY_ISSUER_ID}" ]; then
+            printf '%s' "$NOTARY_KEY" | base64 --decode > "${RUNNER_TEMP}/notary.p8"
+            xcrun notarytool submit dist/installers/dmatrix.pkg \
+              --key "${RUNNER_TEMP}/notary.p8" \
+              --key-id "$NOTARY_KEY_ID" \
+              --issuer "$NOTARY_ISSUER_ID" \
+              --wait
+            rm -f "${RUNNER_TEMP}/notary.p8"
+            # Stapling is what lets a Mac verify the notarization offline.
+            xcrun stapler staple dist/installers/dmatrix.pkg
+            xcrun stapler validate dist/installers/dmatrix.pkg
+            echo "signed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Signed but not notarized — no notarytool API key configured."
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload dmatrix.pkg
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dmatrix-pkg
+          path: dist/installers/dmatrix.pkg
+          if-no-files-found: error
+
+  windows:
+    name: Build dmatrix.msi
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    outputs:
+      signed: ${{ steps.build.outputs.signed }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Build dmatrix.msi
+        id: build
+        shell: pwsh
+        env:
+          SIGNING_ENDPOINT: ${{ secrets.AZURE_SIGNING_ENDPOINT }}
+        run: |
+          & pwsh -NoProfile -File installers/windows/build-msi.ps1
+          if ($LASTEXITCODE -ne 0) { throw "build-msi exited $LASTEXITCODE" }
+          if (-not (Test-Path 'dist/installers/dmatrix.msi')) { throw 'no MSI was produced' }
+          # The sign step below is gated on the same secret, so this output and that
+          # condition cannot disagree about whether the asset ended up signed.
+          if ($env:SIGNING_ENDPOINT) {
+            'signed=true' | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          } else {
+            'signed=false' | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+            Write-Output '::notice::No Azure Trusted Signing account configured - publishing an unsigned installer.'
+          }
+
+      # Azure Trusted Signing rather than a certificate file: it issues short-lived
+      # certificates, so there is no .pfx in a secret to leak and no private key on the
+      # runner. The vendor's own action wraps signtool with their signing dlib; doing it by
+      # hand means reimplementing that, so this is the one third-party action here.
+      - name: Sign dmatrix.msi
+        if: steps.build.outputs.signed == 'true'
+        uses: azure/trusted-signing-action@c7ab2a863ab5f9a846ddb8265964877ef296ee82 # v2.0.0
+        with:
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          endpoint: ${{ secrets.AZURE_SIGNING_ENDPOINT }}
+          trusted-signing-account-name: ${{ secrets.AZURE_SIGNING_ACCOUNT }}
+          certificate-profile-name: ${{ secrets.AZURE_CERT_PROFILE }}
+          files-folder: dist/installers
+          files-folder-filter: msi
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+
+      - name: Upload dmatrix.msi
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dmatrix-msi
+          path: dist/installers/dmatrix.msi
+          if-no-files-found: error
+
+  publish:
+    name: Publish the release
+    runs-on: ubuntu-latest
+    needs: [macos, windows]
+    # The only job that writes anything, and the only one with a token that can.
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download dmatrix.pkg
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: dmatrix-pkg
+          path: assets
+
+      - name: Download dmatrix.msi
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: dmatrix-msi
+          path: assets
+
+      # decide.zip has the same shape the renderer produces — the decide/ folder at the
+      # archive's top level, README excluded — because claude.ai's Skill upload and
+      # ChatGPT's both expect exactly that. Entry times are normalized so re-running a
+      # release on an unchanged Skill produces the same bytes.
+      - name: Assemble the scripts, the Skill bundle, and the checksums
+        run: |
+          set -eu
+          cp install.sh install.ps1 assets/
+          find skills/decide -exec touch -t 202001010000 {} +
+          (cd skills && zip -r -X "${GITHUB_WORKSPACE}/assets/decide.zip" decide -x 'decide/README.md')
+          cd assets
+          sha256sum dmatrix.pkg dmatrix.msi install.sh install.ps1 decide.zip > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Write the release notes
+        env:
+          TAG_INPUT: ${{ inputs.tag }}
+          REF_NAME: ${{ github.ref_name }}
+          PKG_SIGNED: ${{ needs.macos.outputs.signed }}
+          MSI_SIGNED: ${{ needs.windows.outputs.signed }}
+        run: |
+          set -eu
+          tag="${TAG_INPUT:-$REF_NAME}"
+          echo "TAG=${tag}" >> "$GITHUB_ENV"
+          {
+            printf '## Install\n\n'
+            printf 'One command, every AI client on the machine:\n\n'
+            printf '```sh\ncurl -fsSL https://www.dmatrix.com/install.sh | sh\n```\n\n'
+            printf '```powershell\nirm https://www.dmatrix.com/install.ps1 | iex\n```\n\n'
+            printf 'Prefer not to use a terminal? Download `dmatrix.pkg` (macOS) or '
+            printf '`dmatrix.msi` (Windows) below.\n\n'
+            printf 'Verify a download against `SHA256SUMS.txt`:\n\n'
+            printf '```sh\nshasum -a 256 dmatrix.pkg\n```\n\n'
+            printf '```powershell\nGet-FileHash dmatrix.msi -Algorithm SHA256\n```\n'
+          } > notes.md
+          if [ "$PKG_SIGNED" != "true" ] || [ "$MSI_SIGNED" != "true" ]; then
+            {
+              printf '\n## Unsigned build\n\n'
+              printf 'These installers are not code-signed yet, so the OS will stop the '
+              printf 'first launch. Once:\n\n'
+              printf -- '- **macOS** — System Settings → Privacy & Security → **Open Anyway**.\n'
+              printf -- '- **Windows** — More info → **Run anyway**.\n\n'
+              printf 'The install scripts are unaffected: `curl … | sh` and `irm … | iex` '
+              printf 'do not pass through Gatekeeper or SmartScreen.\n'
+            } >> notes.md
+          fi
+          cat notes.md
+
+      # Create or update: re-running a release for the same tag replaces its assets rather
+      # than failing, which is what makes a retry after a flaky runner harmless.
+      - name: Create or update the GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eu
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --notes-file notes.md
+            gh release upload "$TAG" assets/* --clobber
+          else
+            gh release create "$TAG" assets/* \
+              --title "dMatrix extensions ${TAG#dmatrix--}" \
+              --notes-file notes.md
+          fi
+          gh release view "$TAG" --json assets --jq '.assets[].name'
