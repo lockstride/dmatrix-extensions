@@ -8,6 +8,26 @@ Bring dMatrix **decision-capture** to your favorite AI assistant. dMatrix notice
 you're weighing alternatives, evaluating trade-offs, or making a decision — and offers
 to capture it as a structured, auditable decision matrix.
 
+## One-step install
+
+One command installs dMatrix into every AI client on your machine — Claude Code, Codex CLI
+(which also covers the ChatGPT desktop app), and Antigravity CLI — and prints what it did
+for each. Re-run it any time to update every copy.
+
+**macOS and Linux**
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/lockstride/dmatrix-extensions/main/install.sh | sh
+```
+
+Want to see what it would do first? Add `-s -- --dry-run`. Other options: `--only
+claude|codex|agy`, `--ref <branch-or-tag>`, `--uninstall`. It needs no `sudo` and writes
+only inside the clients' own homes.
+
+The Claude app (including Cowork), claude.ai, and ChatGPT on the web install against your
+account rather than your machine, so no script can set them up — the command prints their
+manual steps, and the guides below have the full walkthrough.
+
 ## Pick your assistant
 
 | Assistant | Guide | One-step setup? |
@@ -66,6 +86,7 @@ Use it when:
 ## Repository structure
 
 ```
+install.sh                          # One-step installer for macOS + Linux (see above)
 shared/canonical-prompt/source.md   # The single source of truth (canonical behavior)
 .claude-plugin/ · .codex-plugin/    # Claude + ChatGPT/Codex plugin manifests; self-vending marketplace
 .mcp.json                           # Shared MCP wiring (one file, both plugins)
