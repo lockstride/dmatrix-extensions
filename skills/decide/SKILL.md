@@ -3,7 +3,7 @@ name: decide
 description: "dMatrix decision-capture mode. Trigger whenever the conversation is decision-shaped — the user is choosing between alternatives, weighing trade-offs, evaluating options against criteria, or asking for a recommendation ('what should we use for X', 'which vendor/tool/platform', 'recommend something for…') — even if they never mention dMatrix, a matrix, or capture. On load, follow the canonical guidance: offer capture with one brief suggestion, wait for go-ahead, never auto-populate. Also runs as /decide."
 argument-hint: "[matrix URL | id | name — optional: attach an existing Matrix]"
 version_hash: 763240ee3c5b99c3
-plugin_version: 1.0.0
+plugin_version: 1.1.0
 ---
 
 ## Attaching a Matrix on invocation
