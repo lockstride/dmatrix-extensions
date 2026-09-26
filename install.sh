@@ -41,7 +41,8 @@
 # --update: a launchd LaunchAgent on macOS, a systemd user timer (or a crontab line) on
 # Linux. --update is quiet, touches only clients that already have the plugin, and runs
 # nothing but those clients' own update commands - it never fetches code and executes it.
-# Its output goes to a log; a failure also raises a desktop notification naming that log.
+# Its output goes to a log; a failure raises a desktop notification, and because a
+# notification can be suppressed, the next interactive run also prints the log's path.
 # --no-updater skips all of it, and --uninstall removes the job, the copy, and the log.
 #
 # Result lines. Exactly one per client, in client order:
@@ -620,6 +621,19 @@ notify_failure() {
   printf 'dMatrix update failed; see %s\n' "$LOG_FILE" >&2
 }
 
+# The second half of "failures surface where the user will see them": a notification can be
+# missed or suppressed, so if the last run the log recorded failed, say so the next time
+# someone runs this interactively.
+show_update_failure() {
+  [ -f "$LOG_FILE" ] || return 0
+  # Only the newest session counts: a failure the next run recovered from is history.
+  marker_line="$(grep -n '^=== ' "$LOG_FILE" 2>/dev/null | tail -n 1 | cut -d: -f1)"
+  [ -n "$marker_line" ] || return 0
+  if tail -n "+${marker_line}" "$LOG_FILE" | grep -q 'FAILED'; then
+    alert "updater — the last automatic update failed; see ${LOG_FILE}"
+  fi
+}
+
 # One client's update, for --update: the client's own commands and nothing else. Only
 # called for a client that already has the plugin, so this never installs anywhere new.
 update_claude() {
@@ -755,6 +769,7 @@ main() {
   fi
 
   say "Installing dMatrix from ${REPO} at ${REF}"
+  show_update_failure
   if [ "$want_claude" = 1 ]; then install_claude || true; fi
   if [ "$want_codex" = 1 ]; then install_codex || true; fi
   if [ "$want_agy" = 1 ]; then install_agy || true; fi

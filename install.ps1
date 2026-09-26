@@ -17,10 +17,21 @@
         -Ref <git-ref>           DMATRIX_REF        branch or tag (default: main)
         -DryRun                  DMATRIX_DRY_RUN    print what would happen, change nothing
         -Uninstall               DMATRIX_UNINSTALL  remove what this script installed
+        -NoUpdater               DMATRIX_NO_UPDATER install without the daily updater
+        -Update                  DMATRIX_UPDATE     the updater's own mode (see below)
         -Help                                       the usage text
 
     DMATRIX_EXTENSIONS_REPO and DMATRIX_EXTENSIONS_REF override where the plugin comes
     from, as in install.sh. A switch env var counts as set for 1, true, or yes.
+
+    The updater. No client refreshes a third-party marketplace on its own, so an install
+    also leaves a copy of this script under %LOCALAPPDATA%\dMatrix\ and registers a daily
+    Task Scheduler task - current user, no elevation - that runs that local copy with
+    -Update. -Update is quiet, touches only clients that already have the plugin, and runs
+    nothing but those clients' own update commands: it never fetches code and executes it.
+    Its output goes to a log beside the copy. A failure raises a notification, and because
+    a notification can be suppressed, the next interactive run also prints the log's path.
+    -NoUpdater skips all of it, and -Uninstall unregisters the task and removes the copy.
 
     Everything this file contains is ASCII on purpose: Windows PowerShell 5.1 decodes a
     .ps1 with no byte-order mark using the system's ANSI code page, which would mangle a
@@ -43,6 +54,8 @@ param(
     [string]$Ref,
     [switch]$DryRun,
     [switch]$Uninstall,
+    [switch]$NoUpdater,
+    [switch]$Update,
     [switch]$Help
 )
 
@@ -72,6 +85,8 @@ if (-not $Ref -and $env:DMATRIX_REF) { $Ref = $env:DMATRIX_REF }
 if (-not $Ref -and $env:DMATRIX_EXTENSIONS_REF) { $Ref = $env:DMATRIX_EXTENSIONS_REF }
 if (-not $DryRun -and (Test-EnvSwitch $env:DMATRIX_DRY_RUN)) { $DryRun = $true }
 if (-not $Uninstall -and (Test-EnvSwitch $env:DMATRIX_UNINSTALL)) { $Uninstall = $true }
+if (-not $NoUpdater -and (Test-EnvSwitch $env:DMATRIX_NO_UPDATER)) { $NoUpdater = $true }
+if (-not $Update -and (Test-EnvSwitch $env:DMATRIX_UPDATE)) { $Update = $true }
 
 $script:Repo = if ($env:DMATRIX_EXTENSIONS_REPO) {
     $env:DMATRIX_EXTENSIONS_REPO
@@ -96,19 +111,39 @@ $script:CacheRoot = if ($env:LOCALAPPDATA) {
 }
 $script:CacheDir = Join-Path $script:CacheRoot 'dmatrix-extensions'
 
+# The copy the scheduled task runs, and its log. Beside the cache under
+# %LOCALAPPDATA%\dMatrix so an uninstall has one place to clear.
+$script:LocalScript = Join-Path $script:CacheRoot 'install.ps1'
+$script:LogFile = Join-Path $script:CacheRoot 'update.log'
+$script:TaskName = 'dMatrixExtensionsUpdater'
+# Task Scheduler and Register-ScheduledTask exist only on Windows; `$IsWindows` does not
+# exist on Windows PowerShell 5.1, and Set-StrictMode makes reading it an error there.
+$script:OnWindows = ($env:OS -eq 'Windows_NT')
+
 $script:ClaudeManual = 'https://github.com/lockstride/dmatrix-extensions/blob/main/claude/README.md'
 $script:OpenAiManual = 'https://github.com/lockstride/dmatrix-extensions/blob/main/openai/README.md'
 
 $script:DryRunMode = [bool]$DryRun
 $script:UninstallMode = [bool]$Uninstall
+$script:UpdateMode = [bool]$Update
 $script:CountOk = 0
 $script:CountSkipped = 0
 $script:CountFailed = 0
 
 # Console writes rather than Write-Output: a result line must never leak into a
-# function's return value, and Write-Host is what PSScriptAnalyzer rejects.
+# function's return value, and Write-Host is what PSScriptAnalyzer rejects. Under -Update
+# there is no console worth writing to - the scheduled task discards it - so the same lines
+# go to the log, which is the run's only record.
 function Write-Line {
     param([string]$Text = '')
+    if ($script:UpdateMode) {
+        try {
+            Add-Content -LiteralPath $script:LogFile -Value $Text
+        } catch {
+            Write-Debug "could not append to the log: $_"
+        }
+        return
+    }
     [Console]::Out.WriteLine($Text)
 }
 
@@ -140,6 +175,13 @@ function Write-Failure {
     $script:CountFailed++
 }
 
+# A warning about something that is not one of the clients - the updater. Shaped like a
+# client warning so it reads the same, but outside the counts, which are per client.
+function Write-Alert {
+    param([string]$Text)
+    Write-ErrLine "  warn  $Text"
+}
+
 function Show-Usage {
     Write-Line 'Usage: install.ps1 [-Only claude|codex|agy] [-Ref <git-ref>] [-DryRun] [-Uninstall]'
     Write-Line ''
@@ -151,12 +193,19 @@ function Show-Usage {
     Write-Line '  -Only claude|codex|agy   one client instead of every client detected'
     Write-Line '  -Ref <git-ref>           branch or tag to install from (default: main)'
     Write-Line '  -DryRun                  print what would happen without changing anything'
-    Write-Line '  -Uninstall               remove what this script installed'
+    Write-Line '  -Uninstall               remove what this script installed, updater included'
+    Write-Line '  -NoUpdater               install without the daily updater'
+    Write-Line '  -Update                  what the updater runs: quiet, installed clients only'
     Write-Line '  -Help                    this text'
     Write-Line ''
     Write-Line 'Piping into iex passes no parameters, so each option is also read from an'
     Write-Line 'environment variable: DMATRIX_ONLY, DMATRIX_REF, DMATRIX_DRY_RUN,'
-    Write-Line 'DMATRIX_UNINSTALL.'
+    Write-Line 'DMATRIX_UNINSTALL, DMATRIX_NO_UPDATER, DMATRIX_UPDATE.'
+    Write-Line ''
+    Write-Line 'An install also registers a daily scheduled task that re-runs the clients own'
+    Write-Line 'update commands, so a new release reaches every installed client without you'
+    Write-Line 'doing anything. It runs a copy of this script kept beside its log, and never'
+    Write-Line 'fetches code to execute.'
     Write-Line ''
     Write-Line 'The Claude app (including Cowork), claude.ai, and ChatGPT on the web install'
     Write-Line 'against your account and cannot be scripted; this prints their manual steps.'
@@ -411,6 +460,219 @@ function Uninstall-ForAntigravity {
     return $true
 }
 
+# --- The updater -----------------------------------------------------------------------
+
+# A path is a usable copy of this script only if it is a file carrying the marker in its
+# header. Piped into iex there is no file at all, so this is what decides whether the local
+# copy can be copied or has to be fetched.
+function Test-SelfScript {
+    param([string]$Path)
+    if (-not $Path) { return $false }
+    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { return $false }
+    return (Get-Content -LiteralPath $Path -Raw) -match 'dmatrix-extensions-install-script'
+}
+
+<#
+    Puts the script the scheduled task will run at $script:LocalScript. The running file is
+    used when there is one (a saved script, or the MSI payload); the `| iex` path has no
+    file, so the same ref the install used is fetched once, here, at install time. Whatever
+    lands is what the task runs from then on: the task itself never fetches anything.
+#>
+function Install-LocalCopy {
+    if ($script:DryRunMode) {
+        Write-Line "  would run: install this script at $script:LocalScript"
+        return $true
+    }
+    try {
+        $null = New-Item -ItemType Directory -Path $script:CacheRoot -Force
+        $running = $PSCommandPath
+        if (Test-SelfScript $running) {
+            Copy-Item -LiteralPath $running -Destination $script:LocalScript -Force
+            return $true
+        }
+        $raw = "https://raw.githubusercontent.com/$script:Repo/$script:Ref/install.ps1"
+        $part = "$script:LocalScript.part"
+        Invoke-WebRequest -Uri $raw -OutFile $part -UseBasicParsing
+        if (-not (Test-SelfScript $part)) {
+            Remove-Item -LiteralPath $part -Force -ErrorAction SilentlyContinue
+            return $false
+        }
+        Move-Item -LiteralPath $part -Destination $script:LocalScript -Force
+        return $true
+    } catch {
+        Write-Debug "local copy failed: $_"
+        return $false
+    }
+}
+
+<#
+    Registers the daily task. `powershell.exe` rather than the engine that happens to be
+    running: Windows PowerShell is always present, so the task keeps working if a
+    side-by-side PowerShell 7 is later removed. -Force replaces an existing registration,
+    which is what makes a re-run an update rather than a duplicate.
+#>
+function Register-Updater {
+    if (-not (Install-LocalCopy)) {
+        Write-Alert "updater $script:Dash could not place a local copy at $script:LocalScript; skipped"
+        return $false
+    }
+    if (-not $script:OnWindows) {
+        Write-Note "updater $script:Dash not registered: Task Scheduler is Windows-only (use install.sh here)"
+        return $true
+    }
+    if ($script:DryRunMode) {
+        Write-Line "  would run: Register-ScheduledTask -TaskName $script:TaskName (daily, current user)"
+        Write-Note "updater $script:Dash daily scheduled task registered; logs to $script:LogFile"
+        return $true
+    }
+    try {
+        $argument = "-NoProfile -ExecutionPolicy Bypass -File `"$script:LocalScript`" -Update"
+        $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument $argument
+        $trigger = New-ScheduledTaskTrigger -Daily -At '4:17am'
+        $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable `
+            -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
+        $null = Register-ScheduledTask -TaskName $script:TaskName -Action $action `
+            -Trigger $trigger -Settings $settings -Force `
+            -Description 'Updates the dMatrix plugin in every client that has it.'
+    } catch {
+        Write-Alert "updater $script:Dash could not register the scheduled task: $_"
+        return $false
+    }
+    Write-Note "updater $script:Dash daily scheduled task registered; logs to $script:LogFile"
+    return $true
+}
+
+function Unregister-Updater {
+    if ($script:DryRunMode) {
+        Write-Line "  would run: Unregister-ScheduledTask -TaskName $script:TaskName"
+        Write-Line "  would run: Remove-Item -Recurse -Force $script:CacheRoot"
+        Write-Note "updater $script:Dash removed"
+        return $true
+    }
+    if ($script:OnWindows) {
+        try {
+            $existing = Get-ScheduledTask -TaskName $script:TaskName -ErrorAction SilentlyContinue
+            if ($existing) {
+                Unregister-ScheduledTask -TaskName $script:TaskName -Confirm:$false
+            }
+        } catch {
+            Write-Alert "updater $script:Dash could not unregister the scheduled task: $_"
+        }
+    }
+    foreach ($path in @($script:LocalScript, $script:LogFile)) {
+        if (Test-Path -LiteralPath $path) {
+            Remove-Item -LiteralPath $path -Force -ErrorAction SilentlyContinue
+        }
+    }
+    Write-Note "updater $script:Dash task, local copy, and log removed"
+    return $true
+}
+
+<#
+    Where a failed update has to end up for someone to see it. A tray balloon is the only
+    notifier every supported Windows has without extra modules, and it can be suppressed by
+    policy - so the log is the durable record and Show-UpdateFailure surfaces it on the next
+    interactive run. Best-effort by design: no notifier is a reason to keep the log, not to
+    fail.
+#>
+function Show-Notification {
+    param([string]$Message)
+    if (-not $script:OnWindows) { return }
+    try {
+        Add-Type -AssemblyName System.Windows.Forms -ErrorAction Stop
+        $icon = New-Object System.Windows.Forms.NotifyIcon
+        $icon.Icon = [System.Drawing.SystemIcons]::Warning
+        $icon.BalloonTipTitle = 'dMatrix'
+        $icon.BalloonTipText = $Message
+        $icon.Visible = $true
+        $icon.ShowBalloonTip(10000)
+        Start-Sleep -Seconds 1
+        $icon.Dispose()
+    } catch {
+        Write-Debug "notification unavailable: $_"
+    }
+}
+
+# The second half of "failures surface where the user will see them": if the last run the
+# log recorded failed, say so the next time someone runs this interactively.
+function Show-UpdateFailure {
+    if (-not (Test-Path -LiteralPath $script:LogFile)) { return }
+    try {
+        $sessions = (Get-Content -LiteralPath $script:LogFile -Raw) -split '(?m)^=== '
+        $last = @($sessions)[-1]
+    } catch {
+        return
+    }
+    if ($last -match 'FAILED') {
+        Write-Alert "updater $script:Dash the last automatic update failed; see $script:LogFile"
+    }
+}
+
+# One client's update: the client's own commands and nothing else. Only called for a client
+# that already has the plugin, so this never installs anywhere new.
+function Invoke-ClaudeUpdate {
+    if (-not (Invoke-ClientCommand 'claude' @('plugin', 'marketplace', 'update', $script:Marketplace))) {
+        return $false
+    }
+    return (Invoke-ClientCommand 'claude' @('plugin', 'update', $script:PluginId, '--scope', 'user', '-y'))
+}
+
+function Invoke-CodexUpdate {
+    if (-not (Invoke-ClientCommand 'codex' @('plugin', 'marketplace', 'upgrade', $script:Marketplace))) {
+        return $false
+    }
+    return (Invoke-ClientCommand 'codex' @('plugin', 'add', $script:PluginId))
+}
+
+function Invoke-AntigravityUpdate {
+    if (-not (Get-ExtensionsBundle)) { return $false }
+    $bundle = Join-Path $script:CacheDir ($script:BundlePath -replace '/', [IO.Path]::DirectorySeparatorChar)
+    return (Invoke-ClientCommand 'agy' @('plugin', 'install', $bundle))
+}
+
+<#
+    The scheduled task's whole body. Silent on success: everything it says goes to the log,
+    and only a failure reaches the user. Returns whether every client it tried succeeded,
+    which becomes the task's recorded exit status.
+#>
+function Invoke-Update {
+    $null = New-Item -ItemType Directory -Path $script:CacheRoot -Force
+    Write-Line ("=== {0} update ({1} at {2}) ===" -f
+        (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ'),
+        $script:Repo, $script:Ref)
+    $failed = 0
+    if ((Test-ClientPresent 'claude') -and (Test-ClaudePlugin)) {
+        if (Invoke-ClaudeUpdate) {
+            Write-Line 'claude: updated'
+        } else {
+            Write-Line 'claude: FAILED'
+            $failed++
+        }
+    }
+    if ((Test-ClientPresent 'codex') -and (Test-CodexPluginSupport) -and (Test-CodexPlugin)) {
+        if (Invoke-CodexUpdate) {
+            Write-Line 'codex: updated'
+        } else {
+            Write-Line 'codex: FAILED'
+            $failed++
+        }
+    }
+    if ((Test-ClientPresent 'agy') -and (Test-Path -LiteralPath $script:CacheDir)) {
+        if (Invoke-AntigravityUpdate) {
+            Write-Line 'agy: updated'
+        } else {
+            Write-Line 'agy: FAILED'
+            $failed++
+        }
+    }
+    if ($failed -gt 0) {
+        Show-Notification "Could not update your dMatrix plugins. See $script:LogFile"
+        Write-ErrLine "dMatrix update failed; see $script:LogFile"
+        return $false
+    }
+    return $true
+}
+
 # --- Manual surfaces -------------------------------------------------------------------
 
 function Show-ManualPointer {
@@ -442,6 +704,13 @@ if ($Help) {
     exit 0
 }
 
+# The scheduled task's mode: no banner, no summary, no per-client lines. It reports through
+# the log and, on failure, a notification.
+if ($script:UpdateMode) {
+    if (Invoke-Update) { exit 0 }
+    exit 1
+}
+
 if ($Only -and @('claude', 'codex', 'agy') -notcontains $Only) {
     Write-ErrLine "error: -Only takes claude, codex, or agy, not '$Only'"
     exit 2
@@ -468,14 +737,20 @@ if ($script:UninstallMode) {
     if ($wantClaude) { $null = Uninstall-ForClaude }
     if ($wantCodex) { $null = Uninstall-ForCodex }
     if ($wantAgy) { $null = Uninstall-ForAntigravity }
+    # The updater belongs to the install as a whole, not to one client, so it goes only
+    # when the run was not narrowed to a single client.
+    if (-not $Only) { $null = Unregister-Updater }
     Show-Summary
     exit 0
 }
 
 Write-Line "Installing dMatrix from $script:Repo at $script:Ref"
+Show-UpdateFailure
 if ($wantClaude) { $null = Install-ForClaude }
 if ($wantCodex) { $null = Install-ForCodex }
 if ($wantAgy) { $null = Install-ForAntigravity }
+# Nothing to keep current if nothing was installed, and -NoUpdater opts out.
+if (-not $NoUpdater -and $script:CountOk -gt 0) { $null = Register-Updater }
 # Only mention the account-side surfaces when every detected client was handled; a run
 # narrowed with -Only is answering a narrower question.
 if (-not $Only) { Show-ManualPointer }
