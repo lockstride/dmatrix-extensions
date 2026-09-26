@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  productbuild distribution for dmatrix.pkg. __VERSION__ is substituted by build-pkg.sh
+  from PLUGIN_VERSION, so the package's version is the plugin's version and neither can
+  drift from the other.
+
+  customize="never": there is exactly one thing to install and no choice to offer.
+  require-scripts="true": the payload alone installs nothing into a client — the
+  postinstall is the install, so a run that skipped it would be a silent no-op.
+-->
+<installer-gui-script minSpecVersion="2">
+  <title>dMatrix Decision Capture</title>
+  <welcome file="welcome.html" mime-type="text/html" />
+  <conclusion file="conclusion.html" mime-type="text/html" />
+  <options customize="never" require-scripts="true" hostArchitectures="arm64,x86_64" />
+  <domains enable_anywhere="false" enable_currentUserHome="false" enable_localSystem="true" />
+  <choices-outline>
+    <line choice="default">
+      <line choice="com.dmatrix.extensions" />
+    </line>
+  </choices-outline>
+  <choice id="default" />
+  <choice id="com.dmatrix.extensions" visible="false">
+    <pkg-ref id="com.dmatrix.extensions" />
+  </choice>
+  <pkg-ref id="com.dmatrix.extensions" version="__VERSION__" onConclusion="none">component.pkg</pkg-ref>
+</installer-gui-script>

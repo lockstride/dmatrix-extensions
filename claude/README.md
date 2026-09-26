@@ -44,6 +44,28 @@ dMatrix. (Prefer a menu? Just run `/plugin` and browse the **Discover** tab.)
 > choose **Authenticate**, and complete the browser sign-in — once, then it's cached.
 > Create a free account at [dmatrix.com](https://dmatrix.com).
 
+### No terminal? Use the installer
+
+The macOS package on the
+[latest release](https://github.com/lockstride/dmatrix-extensions/releases/latest/download/dmatrix.pkg)
+does the same thing by double-click: it sets up every AI client on the Mac, shows you what
+it did, and adds a daily check that keeps the plugin current. It's the
+[one-step script](../README.md#one-step-install) in package form — same steps, no terminal.
+
+> **This build is unsigned for now.** macOS will refuse it on the first try: open
+> **System Settings → Privacy & Security**, scroll to the note about dmatrix.pkg, and
+> click **Open Anyway**. Signed builds are coming.
+
+**To remove everything it installed**, run these in Terminal. The first is deliberately
+_not_ `sudo` — the plugin and the daily check live in your account, which is where it
+needs to look:
+
+```sh
+"/Library/Application Support/dMatrix/install.sh" --uninstall
+sudo pkgutil --forget com.dmatrix.extensions
+sudo rm -rf "/Library/Application Support/dMatrix"
+```
+
 ---
 
 ## The Claude app (claude.ai and Desktop)

@@ -1,0 +1,83 @@
+#!/bin/sh
+# postinstall — run the installed install.sh as the person who is actually using the Mac.
+#
+# Installer runs this as root, but every client's plugin store lives in a user's home, so
+# doing the work as root would install into /var/root and reach nobody. The console user is
+# the one whose Mac this is; SUDO_USER and USER are the fallbacks for a command-line
+# install (`sudo installer -pkg ...`), which is how CI exercises this.
+#
+# The package's payload IS the one-step script, so nothing about the install is duplicated
+# here: this decides who to run it as, keeps its output, and says how it went.
+
+set -u
+
+SUPPORT_DIR="/Library/Application Support/dMatrix"
+PAYLOAD="${SUPPORT_DIR}/install.sh"
+LOG="${SUPPORT_DIR}/install.log"
+
+# Who this Mac belongs to. A name of root, or one of the system accounts macOS parks on
+# /dev/console between logins, means "nobody is logged in" rather than "install as root".
+resolve_user() {
+  candidate="$(stat -f%Su /dev/console 2>/dev/null || true)"
+  case "$candidate" in
+  "" | root | _*) candidate="" ;;
+  esac
+  if [ -z "$candidate" ]; then
+    case "${SUDO_USER:-}" in
+    "" | root) ;;
+    *) candidate="$SUDO_USER" ;;
+    esac
+  fi
+  if [ -z "$candidate" ]; then
+    case "${USER:-}" in
+    "" | root) ;;
+    *) candidate="$USER" ;;
+    esac
+  fi
+  printf '%s' "$candidate"
+}
+
+target_user="$(resolve_user)"
+
+mkdir -p "$SUPPORT_DIR"
+{
+  printf '=== %s dMatrix install ===\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+} >>"$LOG" 2>&1
+
+if [ -z "$target_user" ]; then
+  printf 'No logged-in user to install for; run %s from a terminal.\n' "$PAYLOAD" >>"$LOG"
+  chmod 0644 "$LOG" 2>/dev/null || true
+  # Not a package failure: the payload is in place and the user can run it.
+  exit 0
+fi
+
+target_home="$(dscl . -read "/Users/${target_user}" NFSHomeDirectory 2>/dev/null |
+  sed -n 's/^NFSHomeDirectory: //p')"
+[ -n "$target_home" ] || target_home="/Users/${target_user}"
+
+# -H so the script's ~ is the user's, not root's. The updater registration is deliberately
+# left on: a package install is exactly the case where nobody is going to re-run anything.
+# shellcheck disable=SC2024  # the redirect running as root is the point: the log is in
+# /Library, which the target user cannot write.
+sudo -u "$target_user" -H env "HOME=${target_home}" /bin/sh "$PAYLOAD" >>"$LOG" 2>&1
+status=$?
+chmod 0644 "$LOG" 2>/dev/null || true
+
+summary="$(grep '^Done\.' "$LOG" | tail -n 1)"
+[ -n "$summary" ] || summary="See the log for what happened."
+
+if [ "$status" = 0 ]; then
+  message="dMatrix is set up. ${summary}"
+else
+  message="dMatrix could not finish. ${summary} See ${LOG}"
+fi
+
+# Best-effort: a notification the user misses is not a reason to fail the install, and the
+# conclusion pane and the log both carry the same result.
+sudo -u "$target_user" -H osascript \
+  -e "display notification \"${message}\" with title \"dMatrix\"" >/dev/null 2>&1 || true
+
+# The package succeeded as long as the payload is installed; a client that refused is
+# reported in the log and the notification, not as a failed installation the user cannot
+# act on.
+exit 0
