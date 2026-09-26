@@ -30,10 +30,12 @@
     <SummaryInformation Description="dMatrix decision capture for your AI clients" />
 
     <!-- A newer MSI replaces this one; an older one is refused with a reason rather than
-         installing alongside. AfterInstallExecute so the new payload is in place before the
-         old copy is removed. -->
+         installing alongside. AfterInstallValidate so the old product is retired *before*
+         the new payload lands and RunInstallScript sets the clients up: sequenced after
+         them, the old product's removal would delete the install.log just written and, but
+         for the UPGRADINGPRODUCTCODE condition below, undo the install itself. -->
     <MajorUpgrade
-      Schedule="afterInstallExecute"
+      Schedule="afterInstallValidate"
       DowngradeErrorMessage="A newer version of dMatrix is already installed. Remove it from Apps &amp; Features first."
     />
     <MediaTemplate EmbedCab="yes" />
@@ -60,10 +62,16 @@
     <!-- Windows PowerShell rather than the engine that built this: 5.1 is on every
          supported Windows, so the installer does not depend on PowerShell 7 being there.
          Return="ignore" because a client that refuses is reported in the log, not a reason
-         to roll the installation back and leave the user with nothing. -->
+         to roll the installation back and leave the user with nothing.
+
+         The log is the only place an unattended install reports what it did, and it has to
+         be a redirect of the child process's own stdout and stderr: install.ps1 writes its
+         result lines to the console handles, which no in-process PowerShell pipeline
+         (`*>&1 | Tee-Object`) ever sees. cmd.exe /s /c is what makes `>` a handle redirect;
+         /s takes the rest of the line verbatim once the outer quote pair is stripped. -->
     <SetProperty
       Id="RunInstallScript"
-      Value="&quot;[System64Folder]WindowsPowerShell\v1.0\powershell.exe&quot; -NoProfile -ExecutionPolicy Bypass -Command &quot;&amp; '[INSTALLFOLDER]install.ps1' *&gt;&amp;1 | Tee-Object -FilePath '[INSTALLFOLDER]install.log'&quot;"
+      Value="&quot;[System64Folder]cmd.exe&quot; /s /c &quot;&quot;[System64Folder]WindowsPowerShell\v1.0\powershell.exe&quot; -NoProfile -ExecutionPolicy Bypass -File &quot;[INSTALLFOLDER]install.ps1&quot; &gt; &quot;[INSTALLFOLDER]install.log&quot; 2&gt;&amp;1&quot;"
       Before="RunInstallScript"
       Sequence="execute"
     />
@@ -94,8 +102,15 @@
     <InstallExecuteSequence>
       <!-- After InstallFiles so the script it runs is the one just laid down. -->
       <Custom Action="RunInstallScript" After="InstallFiles" Condition="NOT REMOVE" />
-      <!-- Before RemoveFiles so the script is still on disk to run. -->
-      <Custom Action="RunUninstallScript" Before="RemoveFiles" Condition="REMOVE~=&quot;ALL&quot;" />
+      <!-- Before RemoveFiles so the script is still on disk to run. NOT UPGRADINGPRODUCTCODE
+           because Windows Installer runs the *old* package's uninstall sequence, custom
+           actions included, during RemoveExistingProducts - an upgrade must not tear the
+           plugin back out of every client on its way in. -->
+      <Custom
+        Action="RunUninstallScript"
+        Before="RemoveFiles"
+        Condition="REMOVE~=&quot;ALL&quot; AND NOT UPGRADINGPRODUCTCODE"
+      />
     </InstallExecuteSequence>
 
     <!-- The result of an install is a per-client list, and the only place it lives is the

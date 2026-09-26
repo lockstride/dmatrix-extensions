@@ -430,6 +430,10 @@ self_is_script() {
 # when there is one (a saved script, or the .pkg payload); the one-liner has no file, so
 # the same ref the install used is fetched once, here, at install time. Whatever lands is
 # what the job runs from then on: the job itself never fetches anything.
+#
+# The running file can already be LOCAL_SCRIPT, where `cp` onto itself is an error rather
+# than a no-op. Already in place is the copy installed. (install.ps1 mirrors this: the MSI
+# lays its payload down at exactly that path.)
 install_local_copy() {
   if [ "$dry_run" = 1 ]; then
     printf '  would run: %s\n' "install this script at ${LOCAL_SCRIPT}"
@@ -437,7 +441,10 @@ install_local_copy() {
   fi
   mkdir -p "$SUPPORT_DIR"
   if self_is_script "$0"; then
-    cp "$0" "$LOCAL_SCRIPT"
+    running="$(cd "$(dirname "$0")" 2>/dev/null && pwd)/$(basename "$0")"
+    if [ "$running" != "$LOCAL_SCRIPT" ]; then
+      cp "$0" "$LOCAL_SCRIPT"
+    fi
   else
     raw="https://raw.githubusercontent.com/${REPO}/${REF}/install.sh"
     have curl || return 1

@@ -477,6 +477,10 @@ function Test-SelfScript {
     used when there is one (a saved script, or the MSI payload); the `| iex` path has no
     file, so the same ref the install used is fetched once, here, at install time. Whatever
     lands is what the task runs from then on: the task itself never fetches anything.
+
+    The running file can already *be* $script:LocalScript - the MSI lays its payload down in
+    %LOCALAPPDATA%\dMatrix, which is exactly where the copy belongs - and copying a file
+    onto itself is an error rather than a no-op. Already in place is the copy installed.
 #>
 function Install-LocalCopy {
     if ($script:DryRunMode) {
@@ -487,7 +491,11 @@ function Install-LocalCopy {
         $null = New-Item -ItemType Directory -Path $script:CacheRoot -Force
         $running = $PSCommandPath
         if (Test-SelfScript $running) {
-            Copy-Item -LiteralPath $running -Destination $script:LocalScript -Force
+            $already = ([IO.Path]::GetFullPath($running) -eq
+                [IO.Path]::GetFullPath($script:LocalScript))
+            if (-not $already) {
+                Copy-Item -LiteralPath $running -Destination $script:LocalScript -Force
+            }
             return $true
         }
         $raw = "https://raw.githubusercontent.com/$script:Repo/$script:Ref/install.ps1"
