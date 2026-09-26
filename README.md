@@ -24,6 +24,17 @@ Want to see what it would do first? Add `-s -- --dry-run`. Other options: `--onl
 claude|codex|agy`, `--ref <branch-or-tag>`, `--uninstall`. It needs no `sudo` and writes
 only inside the clients' own homes.
 
+**Windows** (PowerShell 5.1 or 7 — no WSL)
+
+```powershell
+irm https://raw.githubusercontent.com/lockstride/dmatrix-extensions/main/install.ps1 | iex
+```
+
+Piping into `iex` can't pass parameters, so the options come from environment variables
+instead — `$env:DMATRIX_DRY_RUN = 1` before the pipe, and likewise `DMATRIX_ONLY`,
+`DMATRIX_REF`, `DMATRIX_UNINSTALL`. Save the file and run it directly and the same options
+work as `-DryRun`, `-Only`, `-Ref`, `-Uninstall`. No elevation needed.
+
 The Claude app (including Cowork), claude.ai, and ChatGPT on the web install against your
 account rather than your machine, so no script can set them up — the command prints their
 manual steps, and the guides below have the full walkthrough.
@@ -86,7 +97,7 @@ Use it when:
 ## Repository structure
 
 ```
-install.sh                          # One-step installer for macOS + Linux (see above)
+install.sh · install.ps1            # One-step installers (macOS/Linux, Windows) — see above
 shared/canonical-prompt/source.md   # The single source of truth (canonical behavior)
 .claude-plugin/ · .codex-plugin/    # Claude + ChatGPT/Codex plugin manifests; self-vending marketplace
 .mcp.json                           # Shared MCP wiring (one file, both plugins)
