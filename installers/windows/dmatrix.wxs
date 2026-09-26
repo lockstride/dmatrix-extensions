@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  dmatrix.msi — the Windows installer, per-user and unelevated.
+
+  The payload is install.ps1 itself, the same file `irm … | iex` runs, installed to
+  %LOCALAPPDATA%\dMatrix. Two custom actions bracket it: one runs it after install (which
+  is what sets the clients up and registers the daily updater), one runs it with -Uninstall
+  before the files go, so an Apps & Features removal takes the scheduled task and the
+  updater's local copy with it rather than orphaning them.
+
+  Scope="perUser" is the reason there is no UAC prompt: every client's plugin store and the
+  scheduled task belong to one user, so nothing here needs the machine.
+
+  Version comes from PLUGIN_VERSION via build-msi.ps1 (-d Version=…), so the installer's
+  version and the plugin's are the same number by construction. UpgradeCode never changes:
+  it is what makes a newer MSI an upgrade of this one rather than a second copy.
+-->
+<Wix
+  xmlns="http://wixtoolset.org/schemas/v4/wxs"
+  xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui"
+>
+  <Package
+    Name="dMatrix Decision Capture"
+    Manufacturer="Lockstride"
+    Version="$(Version)"
+    UpgradeCode="F7FCBC72-4118-4231-8A2E-BC3BB5D26BDF"
+    Scope="perUser"
+    Compressed="yes"
+  >
+    <SummaryInformation Description="dMatrix decision capture for your AI clients" />
+
+    <!-- A newer MSI replaces this one; an older one is refused with a reason rather than
+         installing alongside. AfterInstallExecute so the new payload is in place before the
+         old copy is removed. -->
+    <MajorUpgrade
+      Schedule="afterInstallExecute"
+      DowngradeErrorMessage="A newer version of dMatrix is already installed. Remove it from Apps &amp; Features first."
+    />
+    <MediaTemplate EmbedCab="yes" />
+
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="INSTALLFOLDER" Name="dMatrix" />
+    </StandardDirectory>
+
+    <ComponentGroup Id="PayloadGroup" Directory="INSTALLFOLDER">
+      <Component Id="InstallScript">
+        <File Id="InstallPs1" Name="install.ps1" Source="!(bindpath.payload)install.ps1" KeyPath="yes" />
+        <!-- The script writes install.log and update.log beside itself. They are not part
+             of the package, so RemoveFile is what stops an uninstall leaving them behind. -->
+        <RemoveFile Id="RemoveInstallLog" Name="install.log" On="uninstall" />
+        <RemoveFile Id="RemoveUpdateLog" Name="update.log" On="uninstall" />
+        <RemoveFolder Id="RemoveInstallFolder" On="uninstall" />
+      </Component>
+    </ComponentGroup>
+
+    <Feature Id="Main" Title="dMatrix Decision Capture" Level="1">
+      <ComponentGroupRef Id="PayloadGroup" />
+    </Feature>
+
+    <!-- Windows PowerShell rather than the engine that built this: 5.1 is on every
+         supported Windows, so the installer does not depend on PowerShell 7 being there.
+         Return="ignore" because a client that refuses is reported in the log, not a reason
+         to roll the installation back and leave the user with nothing. -->
+    <SetProperty
+      Id="RunInstallScript"
+      Value="&quot;[System64Folder]WindowsPowerShell\v1.0\powershell.exe&quot; -NoProfile -ExecutionPolicy Bypass -Command &quot;&amp; '[INSTALLFOLDER]install.ps1' *&gt;&amp;1 | Tee-Object -FilePath '[INSTALLFOLDER]install.log'&quot;"
+      Before="RunInstallScript"
+      Sequence="execute"
+    />
+    <CustomAction
+      Id="RunInstallScript"
+      BinaryRef="Wix4UtilCA_X86"
+      DllEntry="WixQuietExec64"
+      Execute="deferred"
+      Impersonate="yes"
+      Return="ignore"
+    />
+
+    <SetProperty
+      Id="RunUninstallScript"
+      Value="&quot;[System64Folder]WindowsPowerShell\v1.0\powershell.exe&quot; -NoProfile -ExecutionPolicy Bypass -File &quot;[INSTALLFOLDER]install.ps1&quot; -Uninstall"
+      Before="RunUninstallScript"
+      Sequence="execute"
+    />
+    <CustomAction
+      Id="RunUninstallScript"
+      BinaryRef="Wix4UtilCA_X86"
+      DllEntry="WixQuietExec64"
+      Execute="deferred"
+      Impersonate="yes"
+      Return="ignore"
+    />
+
+    <InstallExecuteSequence>
+      <!-- After InstallFiles so the script it runs is the one just laid down. -->
+      <Custom Action="RunInstallScript" After="InstallFiles" Condition="NOT REMOVE" />
+      <!-- Before RemoveFiles so the script is still on disk to run. -->
+      <Custom Action="RunUninstallScript" Before="RemoveFiles" Condition="REMOVE~=&quot;ALL&quot;" />
+    </InstallExecuteSequence>
+
+    <!-- The result of an install is a per-client list, and the only place it lives is the
+         log, so the exit dialog offers to open it rather than making the user find it. -->
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Show what was set up" />
+    <!-- Set rather than declared: a Property's value cannot reference another property, and
+         INSTALLFOLDER is only resolved once costing has run. -->
+    <SetProperty
+      Id="WixShellExecTarget"
+      Value="[INSTALLFOLDER]install.log"
+      After="CostFinalize"
+      Sequence="both"
+    />
+    <CustomAction
+      Id="OpenResultLog"
+      BinaryRef="Wix4UtilCA_X86"
+      DllEntry="WixShellExec"
+      Impersonate="yes"
+      Return="ignore"
+    />
+    <ui:WixUI Id="WixUI_Minimal" />
+    <UI>
+      <Publish
+        Dialog="ExitDialog"
+        Control="Finish"
+        Event="DoAction"
+        Value="OpenResultLog"
+        Condition="WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 AND NOT Installed"
+      />
+    </UI>
+  </Package>
+</Wix>
