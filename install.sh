@@ -28,17 +28,29 @@
 #   --ref <git-ref>           branch or tag to install from (default: main)
 #   --dry-run                 print what would happen without changing anything
 #   --uninstall               remove what this script installed
+#   --no-updater              install without the scheduled updater
+#   --update                  the scheduled updater's own mode (see below)
+#   --scheduler <kind>        launchd, systemd, or cron instead of what this OS suggests
 #   -h, --help                this text
 #
 # Environment: DMATRIX_EXTENSIONS_REPO (owner/repo) and DMATRIX_EXTENSIONS_REF override
 # where the plugin comes from.
 #
+# The updater. No client refreshes a third-party marketplace on its own, so an install
+# also leaves behind a copy of this script and a daily job that runs that local copy with
+# --update: a launchd LaunchAgent on macOS, a systemd user timer (or a crontab line) on
+# Linux. --update is quiet, touches only clients that already have the plugin, and runs
+# nothing but those clients' own update commands - it never fetches code and executes it.
+# Its output goes to a log; a failure also raises a desktop notification naming that log.
+# --no-updater skips all of it, and --uninstall removes the job, the copy, and the log.
+#
 # Result lines. Exactly one per client, in client order:
 #   "  ok    <client> — <what happened>"     the plugin is installed or updated there
 #   "  --    <client> — <why>"               the client is not on this machine
 #   "  warn  <client> — <what failed>"       the client is here but the step failed
-# Lines starting "  --  " that name no client are notes, not results. A final summary
-# counts them: "Done. <n> installed or updated, <n> skipped, <n> failed."
+# A final summary counts them: "Done. <n> installed or updated, <n> skipped, <n> failed."
+# Lines naming no client, and the updater's own lines, are notes rather than results: the
+# summary counts clients, so registering the updater never changes those numbers.
 #
 # Exit codes:
 #   0  at least one client was installed or updated (or would be, under --dry-run)
@@ -50,6 +62,11 @@
 # re-run: a re-run updates every copy already installed.
 
 set -eu
+
+# How a copy of this script recognizes itself. The installed copy the updater runs is
+# taken from the running file when there is one; under `curl ... | sh` there is no file to
+# copy, so this marker is what tells the two cases apart.
+# dmatrix-extensions-install-script
 
 REPO="${DMATRIX_EXTENSIONS_REPO:-lockstride/dmatrix-extensions}"
 REF="${DMATRIX_EXTENSIONS_REF:-main}"
@@ -63,9 +80,34 @@ CACHE_DIR="${XDG_CACHE_HOME:-${HOME}/.cache}/dmatrix-extensions"
 CLAUDE_MANUAL="https://github.com/lockstride/dmatrix-extensions/blob/main/claude/README.md"
 OPENAI_MANUAL="https://github.com/lockstride/dmatrix-extensions/blob/main/openai/README.md"
 
+UPDATER_LABEL="com.dmatrix.extensions-updater"
+UPDATER_UNIT="dmatrix-extensions-updater"
+# One day, in seconds. The claim the updater has to keep is "on the new version within
+# 24h", so the interval is the claim.
+UPDATER_INTERVAL=86400
+# The crontab line's trailing marker — what identifies our entry among the user's own.
+CRON_MARKER="# ${UPDATER_LABEL}"
+
+PLATFORM="$(uname -s)"
+
+if [ "$PLATFORM" = Darwin ]; then
+  SUPPORT_DIR="${HOME}/Library/Application Support/dMatrix"
+  SCHEDULER_DEFAULT=launchd
+else
+  SUPPORT_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/dmatrix"
+  SCHEDULER_DEFAULT=systemd
+fi
+LOCAL_SCRIPT="${SUPPORT_DIR}/install.sh"
+LOG_FILE="${SUPPORT_DIR}/update.log"
+PLIST_PATH="${HOME}/Library/LaunchAgents/${UPDATER_LABEL}.plist"
+SYSTEMD_DIR="${XDG_CONFIG_HOME:-${HOME}/.config}/systemd/user"
+
 only=""
 dry_run=0
 uninstall=0
+no_updater=0
+update_mode=0
+scheduler=""
 
 n_ok=0
 n_skip=0
@@ -74,6 +116,7 @@ n_fail=0
 usage() {
   cat <<'USAGE'
 Usage: install.sh [--only claude|codex|agy] [--ref <git-ref>] [--dry-run] [--uninstall]
+                  [--no-updater] [--scheduler launchd|systemd|cron]
 
 Installs the dMatrix plugin into every AI client found on this machine, each through its
 own plugin manager: Claude Code, Codex CLI (which also covers the ChatGPT desktop app),
@@ -83,8 +126,15 @@ every copy already installed.
   --only claude|codex|agy   one client instead of every client detected
   --ref <git-ref>           branch or tag to install from (default: main)
   --dry-run                 print what would happen without changing anything
-  --uninstall               remove what this script installed
+  --uninstall               remove what this script installed, updater included
+  --no-updater              install without the daily updater
+  --update                  what the updater runs: quiet, updates installed clients only
+  --scheduler <kind>        launchd, systemd, or cron instead of this OS's default
   -h, --help                this text
+
+An install also registers a daily job that re-runs the clients' own update commands, so a
+new release reaches every installed client without you doing anything. It runs a copy of
+this script kept beside its log, and never fetches code to execute.
 
 The Claude app (including Cowork), claude.ai, and ChatGPT on the web install against your
 account and cannot be scripted; this prints their manual steps instead.
@@ -116,6 +166,12 @@ warn() {
   n_fail=$((n_fail + 1))
 }
 
+# A warning about something that is not one of the clients — the updater. Shaped like a
+# client warning so it reads the same, but outside the counts, which are per client.
+alert() {
+  printf '  warn  %s\n' "$*" >&2
+}
+
 # Runs a command, or prints it under --dry-run. Always succeeds in a dry run so the
 # result lines and the exit code are the same as a real run's.
 run() {
@@ -140,6 +196,13 @@ while [ $# -gt 0 ]; do
   --ref=*) REF="${1#--ref=}" ;;
   --dry-run) dry_run=1 ;;
   --uninstall) uninstall=1 ;;
+  --no-updater) no_updater=1 ;;
+  --update) update_mode=1 ;;
+  --scheduler)
+    shift
+    scheduler="${1:-}"
+    ;;
+  --scheduler=*) scheduler="${1#--scheduler=}" ;;
   -h | --help)
     usage
     exit 0
@@ -154,6 +217,11 @@ case "$only" in
 *) die "--only takes claude, codex, or agy, not '$only'" ;;
 esac
 [ -n "$REF" ] || die "--ref needs a value"
+case "$scheduler" in
+"") scheduler="$SCHEDULER_DEFAULT" ;;
+launchd | systemd | cron) ;;
+*) die "--scheduler takes launchd, systemd, or cron, not '$scheduler'" ;;
+esac
 
 # --- Claude Code ----------------------------------------------------------------------
 
@@ -348,6 +416,264 @@ uninstall_agy() {
   fi
 }
 
+# --- The updater -----------------------------------------------------------------------
+
+# A path is a usable copy of this script only if it is a file carrying the marker near the
+# top. Under `curl ... | sh` $0 is the shell, not a file, so this is what decides whether
+# the local copy can be copied or has to be fetched.
+self_is_script() {
+  [ -f "$1" ] && grep -q 'dmatrix-extensions-install-script' "$1" 2>/dev/null
+}
+
+# Puts the script the scheduled job will run at LOCAL_SCRIPT. The running file is used
+# when there is one (a saved script, or the .pkg payload); the one-liner has no file, so
+# the same ref the install used is fetched once, here, at install time. Whatever lands is
+# what the job runs from then on: the job itself never fetches anything.
+install_local_copy() {
+  if [ "$dry_run" = 1 ]; then
+    printf '  would run: %s\n' "install this script at ${LOCAL_SCRIPT}"
+    return 0
+  fi
+  mkdir -p "$SUPPORT_DIR"
+  if self_is_script "$0"; then
+    cp "$0" "$LOCAL_SCRIPT"
+  else
+    raw="https://raw.githubusercontent.com/${REPO}/${REF}/install.sh"
+    have curl || return 1
+    curl -fsSL -o "${LOCAL_SCRIPT}.part" "$raw" || return 1
+    if ! self_is_script "${LOCAL_SCRIPT}.part"; then
+      rm -f "${LOCAL_SCRIPT}.part"
+      return 1
+    fi
+    mv "${LOCAL_SCRIPT}.part" "$LOCAL_SCRIPT"
+  fi
+  chmod 0755 "$LOCAL_SCRIPT"
+}
+
+updater_plist() {
+  cat <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>${UPDATER_LABEL}</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/sh</string>
+    <string>${LOCAL_SCRIPT}</string>
+    <string>--update</string>
+  </array>
+  <key>StartInterval</key>
+  <integer>${UPDATER_INTERVAL}</integer>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StandardErrorPath</key>
+  <string>${LOG_FILE}</string>
+</dict>
+</plist>
+PLIST
+}
+
+updater_service_unit() {
+  cat <<UNIT
+[Unit]
+Description=Update the dMatrix plugin in every client that has it
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh "${LOCAL_SCRIPT}" --update
+UNIT
+}
+
+updater_timer_unit() {
+  cat <<UNIT
+[Unit]
+Description=Daily dMatrix plugin update
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+UNIT
+}
+
+register_launchd() {
+  if [ "$dry_run" = 1 ]; then
+    printf '  would run: %s\n' "write ${PLIST_PATH}"
+    printf '  would run: %s\n' "launchctl bootstrap gui/$(id -u) ${PLIST_PATH}"
+    return 0
+  fi
+  mkdir -p "$(dirname "$PLIST_PATH")"
+  updater_plist >"$PLIST_PATH"
+  domain="gui/$(id -u)"
+  launchctl bootout "${domain}/${UPDATER_LABEL}" 2>/dev/null || true
+  # bootstrap is the supported call; load -w is the one older macOS answers to.
+  launchctl bootstrap "$domain" "$PLIST_PATH" 2>/dev/null ||
+    launchctl load -w "$PLIST_PATH" 2>/dev/null ||
+    return 1
+}
+
+register_systemd() {
+  if [ "$dry_run" = 1 ]; then
+    printf '  would run: %s\n' "write ${SYSTEMD_DIR}/${UPDATER_UNIT}.service and .timer"
+    printf '  would run: %s\n' "systemctl --user enable --now ${UPDATER_UNIT}.timer"
+    return 0
+  fi
+  have systemctl || return 1
+  mkdir -p "$SYSTEMD_DIR"
+  updater_service_unit >"${SYSTEMD_DIR}/${UPDATER_UNIT}.service"
+  updater_timer_unit >"${SYSTEMD_DIR}/${UPDATER_UNIT}.timer"
+  systemctl --user daemon-reload 2>/dev/null || true
+  systemctl --user enable --now "${UPDATER_UNIT}.timer" 2>/dev/null || return 1
+}
+
+# The crontab, rewritten with our one line: every other line the user has is preserved,
+# and ours is replaced rather than duplicated on a re-run.
+register_cron() {
+  if [ "$dry_run" = 1 ]; then
+    printf '  would run: %s\n' "add a daily crontab line running ${LOCAL_SCRIPT} --update"
+    return 0
+  fi
+  have crontab || return 1
+  existing="$(crontab -l 2>/dev/null | grep -v "$CRON_MARKER" || true)"
+  {
+    [ -z "$existing" ] || printf '%s\n' "$existing"
+    printf '17 4 * * * /bin/sh "%s" --update %s\n' "$LOCAL_SCRIPT" "$CRON_MARKER"
+  } | crontab - || return 1
+}
+
+register_updater() {
+  if ! install_local_copy; then
+    alert "updater — could not place a local copy at ${LOCAL_SCRIPT}; skipped"
+    return 1
+  fi
+  case "$scheduler" in
+  launchd) register_launchd || {
+    alert "updater — could not register the LaunchAgent; re-run the one-liner to update"
+    return 1
+  } ;;
+  systemd)
+    if ! register_systemd; then
+      # A desktop Linux without a user systemd instance is ordinary, so fall back
+      # rather than leaving the install with no updater at all.
+      register_cron || {
+        alert "updater — neither a systemd timer nor a crontab entry could be registered"
+        return 1
+      }
+      note "updater — daily crontab entry registered (no systemd user instance)"
+      return 0
+    fi
+    ;;
+  cron) register_cron || {
+    alert "updater — could not add the crontab entry"
+    return 1
+  } ;;
+  esac
+  note "updater — daily ${scheduler} job registered; logs to ${LOG_FILE}"
+}
+
+remove_updater() {
+  if [ "$dry_run" = 1 ]; then
+    printf '  would run: %s\n' "unregister the ${scheduler} job and remove ${SUPPORT_DIR}"
+    note "updater — removed"
+    return 0
+  fi
+  if [ -f "$PLIST_PATH" ]; then
+    launchctl bootout "gui/$(id -u)/${UPDATER_LABEL}" 2>/dev/null ||
+      launchctl unload "$PLIST_PATH" 2>/dev/null || true
+    rm -f "$PLIST_PATH"
+  fi
+  if [ -f "${SYSTEMD_DIR}/${UPDATER_UNIT}.timer" ]; then
+    if have systemctl; then
+      systemctl --user disable --now "${UPDATER_UNIT}.timer" 2>/dev/null || true
+    fi
+    rm -f "${SYSTEMD_DIR}/${UPDATER_UNIT}.timer" "${SYSTEMD_DIR}/${UPDATER_UNIT}.service"
+    if have systemctl; then
+      systemctl --user daemon-reload 2>/dev/null || true
+    fi
+  fi
+  if have crontab && crontab -l 2>/dev/null | grep -q "$CRON_MARKER"; then
+    remaining="$(crontab -l 2>/dev/null | grep -v "$CRON_MARKER" || true)"
+    if [ -z "$remaining" ]; then
+      crontab -r 2>/dev/null || true
+    else
+      printf '%s\n' "$remaining" | crontab - 2>/dev/null || true
+    fi
+  fi
+  rm -f "$LOCAL_SCRIPT" "$LOG_FILE"
+  rmdir "$SUPPORT_DIR" 2>/dev/null || true
+  note "updater — job, local copy, and log removed"
+}
+
+# Where a failed update has to end up for someone to see it. Best-effort by design: no
+# notifier is a reason to leave the log behind, not to fail.
+notify_failure() {
+  if [ "$PLATFORM" = Darwin ] && have osascript; then
+    osascript -e 'display notification "dMatrix could not update your plugins. See the log." with title "dMatrix"' \
+      >/dev/null 2>&1 || true
+  elif have notify-send; then
+    notify-send "dMatrix" "Could not update your plugins. See ${LOG_FILE}" >/dev/null 2>&1 || true
+  fi
+  printf 'dMatrix update failed; see %s\n' "$LOG_FILE" >&2
+}
+
+# One client's update, for --update: the client's own commands and nothing else. Only
+# called for a client that already has the plugin, so this never installs anywhere new.
+update_claude() {
+  claude plugin marketplace update "$MARKETPLACE" &&
+    claude plugin update "$PLUGIN_ID" --scope user -y
+}
+
+update_codex() {
+  codex plugin marketplace upgrade "$MARKETPLACE" &&
+    codex plugin add "$PLUGIN_ID"
+}
+
+update_agy() {
+  fetch_bundle && agy plugin install "${CACHE_DIR}/${BUNDLE_PATH}"
+}
+
+# The scheduled job's whole body. Silent on success: everything it says goes to the log,
+# and only a failure reaches the user.
+run_update() {
+  mkdir -p "$SUPPORT_DIR"
+  {
+    printf '=== %s update (%s at %s) ===\n' \
+      "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" "$REPO" "$REF"
+    if have claude && claude_plugin_present; then
+      if update_claude; then
+        printf 'claude: updated\n'
+      else
+        printf 'claude: FAILED\n'
+        n_fail=$((n_fail + 1))
+      fi
+    fi
+    if have codex && codex_has_plugins && codex_plugin_present; then
+      if update_codex; then
+        printf 'codex: updated\n'
+      else
+        printf 'codex: FAILED\n'
+        n_fail=$((n_fail + 1))
+      fi
+    fi
+    if have agy && [ -d "$CACHE_DIR" ]; then
+      if update_agy; then
+        printf 'agy: updated\n'
+      else
+        printf 'agy: FAILED\n'
+        n_fail=$((n_fail + 1))
+      fi
+    fi
+  } >>"$LOG_FILE" 2>&1
+  [ "$n_fail" = 0 ] || notify_failure
+  # The job's exit status is what the scheduler records, so a failure stays visible there
+  # as well as in the log.
+  [ "$n_fail" = 0 ]
+}
+
 # --- Manual surfaces -------------------------------------------------------------------
 
 manual_steps() {
@@ -374,13 +700,20 @@ summary() {
 }
 
 main() {
-  case "$(uname -s)" in
+  case "$PLATFORM" in
   MINGW* | MSYS* | CYGWIN*)
     say "This is a Windows shell. Install with PowerShell instead:"
     say "  irm https://www.dmatrix.com/install.ps1 | iex"
     exit 1
     ;;
   esac
+
+  # The scheduled job's mode: no banner, no summary, no per-client lines. It reports
+  # through the log and, on failure, a notification.
+  if [ "$update_mode" = 1 ]; then
+    if run_update; then return 0; fi
+    return 1
+  fi
 
   want_claude=0
   want_codex=0
@@ -414,6 +747,9 @@ main() {
     if [ "$want_claude" = 1 ]; then uninstall_claude || true; fi
     if [ "$want_codex" = 1 ]; then uninstall_codex || true; fi
     if [ "$want_agy" = 1 ]; then uninstall_agy || true; fi
+    # The updater belongs to the install as a whole, not to one client, so it goes only
+    # when the run was not narrowed to a single client.
+    if [ -z "$only" ]; then remove_updater || true; fi
     summary
     return 0
   fi
@@ -422,6 +758,8 @@ main() {
   if [ "$want_claude" = 1 ]; then install_claude || true; fi
   if [ "$want_codex" = 1 ]; then install_codex || true; fi
   if [ "$want_agy" = 1 ]; then install_agy || true; fi
+  # Nothing to keep current if nothing was installed, and --no-updater opts out.
+  if [ "$no_updater" = 0 ] && [ "$n_ok" -gt 0 ]; then register_updater || true; fi
   # Only mention the account-side surfaces when every detected client was handled; a run
   # narrowed with --only is answering a narrower question.
   if [ -z "$only" ]; then manual_steps; fi
