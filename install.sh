@@ -742,6 +742,21 @@ main() {
     if have agy; then want_agy=1; fi
   fi
 
+  # An uninstall still has work to do when no client is on PATH — the updater's job, its
+  # local copy and its log are machine-level, not per client — so it runs ahead of the
+  # guards, which only make sense for an install.
+  if [ "$uninstall" = 1 ]; then
+    say "Removing dMatrix"
+    if [ "$want_claude" = 1 ]; then uninstall_claude || true; fi
+    if [ "$want_codex" = 1 ]; then uninstall_codex || true; fi
+    if [ "$want_agy" = 1 ]; then uninstall_agy || true; fi
+    # One job serves every client and an install registers it whatever --only says, so
+    # every uninstall removes it.
+    remove_updater || true
+    summary
+    return 0
+  fi
+
   if [ -n "$only" ] &&
     [ "$want_claude" = 0 ] && [ "$want_codex" = 0 ] && [ "$want_agy" = 0 ]; then
     say "'${only}' is not on PATH, so there is nothing to do."
@@ -754,18 +769,6 @@ main() {
     say "  The Claude app and claude.ai:  ${CLAUDE_MANUAL}"
     say "  ChatGPT on the web:            ${OPENAI_MANUAL}"
     exit 1
-  fi
-
-  if [ "$uninstall" = 1 ]; then
-    say "Removing dMatrix"
-    if [ "$want_claude" = 1 ]; then uninstall_claude || true; fi
-    if [ "$want_codex" = 1 ]; then uninstall_codex || true; fi
-    if [ "$want_agy" = 1 ]; then uninstall_agy || true; fi
-    # The updater belongs to the install as a whole, not to one client, so it goes only
-    # when the run was not narrowed to a single client.
-    if [ -z "$only" ]; then remove_updater || true; fi
-    summary
-    return 0
   fi
 
   say "Installing dMatrix from ${REPO} at ${REF}"

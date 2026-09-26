@@ -720,6 +720,21 @@ $wantClaude = (-not $Only -or $Only -eq 'claude') -and (Test-ClientPresent 'clau
 $wantCodex = (-not $Only -or $Only -eq 'codex') -and (Test-ClientPresent 'codex')
 $wantAgy = (-not $Only -or $Only -eq 'agy') -and (Test-ClientPresent 'agy')
 
+# An uninstall still has work to do when no client is on PATH - the updater's task, its
+# local copy and its log are machine-level, not per client - so it runs ahead of the
+# guards, which only make sense for an install.
+if ($script:UninstallMode) {
+    Write-Line 'Removing dMatrix'
+    if ($wantClaude) { $null = Uninstall-ForClaude }
+    if ($wantCodex) { $null = Uninstall-ForCodex }
+    if ($wantAgy) { $null = Uninstall-ForAntigravity }
+    # One task serves every client and an install registers it whatever -Only says, so
+    # every uninstall removes it.
+    $null = Unregister-Updater
+    Show-Summary
+    exit 0
+}
+
 if (-not ($wantClaude -or $wantCodex -or $wantAgy)) {
     if ($Only) {
         Write-Line "'$Only' is not on PATH, so there is nothing to do."
@@ -730,18 +745,6 @@ if (-not ($wantClaude -or $wantCodex -or $wantAgy)) {
         Write-Line "  ChatGPT on the web:            $script:OpenAiManual"
     }
     exit 1
-}
-
-if ($script:UninstallMode) {
-    Write-Line 'Removing dMatrix'
-    if ($wantClaude) { $null = Uninstall-ForClaude }
-    if ($wantCodex) { $null = Uninstall-ForCodex }
-    if ($wantAgy) { $null = Uninstall-ForAntigravity }
-    # The updater belongs to the install as a whole, not to one client, so it goes only
-    # when the run was not narrowed to a single client.
-    if (-not $Only) { $null = Unregister-Updater }
-    Show-Summary
-    exit 0
 }
 
 Write-Line "Installing dMatrix from $script:Repo at $script:Ref"
