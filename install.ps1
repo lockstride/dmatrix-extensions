@@ -219,6 +219,29 @@ function Test-ClientPresent {
 }
 
 <#
+    Appends the Machine and User PATH that Windows has saved to this process's PATH. A
+    process can start without them: the MSI's custom action is launched by the Windows
+    Installer service, which never had the user's PATH, and a terminal opened before a
+    client was installed predates that client's entry. Appended, so a caller's own PATH
+    still wins. Nothing is saved outside Windows, where this does nothing.
+#>
+function Add-SavedPath {
+    $separator = [IO.Path]::PathSeparator
+    $current = @($env:PATH -split $separator)
+    foreach ($scope in @('Machine', 'User')) {
+        $saved = [Environment]::GetEnvironmentVariable('PATH', $scope)
+        if (-not $saved) { continue }
+        foreach ($entry in $saved -split $separator) {
+            $entry = [Environment]::ExpandEnvironmentVariables($entry)
+            if ($entry -and $current -notcontains $entry) {
+                $env:PATH = "$env:PATH$separator$entry"
+                $current += $entry
+            }
+        }
+    }
+}
+
+<#
     Runs one client command, or prints it under -DryRun. Returns whether it succeeded,
     and nothing else: the command's own output is captured and re-emitted through
     Write-Line so it cannot end up in this function's return value. Always succeeds in a
@@ -711,6 +734,8 @@ if ($Help) {
     Show-Usage
     exit 0
 }
+
+Add-SavedPath
 
 # The scheduled task's mode: no banner, no summary, no per-client lines. It reports through
 # the log and, on failure, a notification.
