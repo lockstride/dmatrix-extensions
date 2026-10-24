@@ -35,9 +35,42 @@ instead — `$env:DMATRIX_DRY_RUN = 1` before the pipe, and likewise `DMATRIX_ON
 `DMATRIX_REF`, `DMATRIX_UNINSTALL`. Save the file and run it directly and the same options
 work as `-DryRun`, `-Only`, `-Ref`, `-Uninstall`. No elevation needed.
 
+### No terminal? Download the installer
+
+The installers on the [latest release](https://github.com/lockstride/dmatrix-extensions/releases/latest)
+are the one-step script in package form: same steps, same daily check that keeps the
+plugin current, started with a double-click.
+
+| | macOS | Windows |
+|---|---|---|
+| **Download** | [dmatrix.pkg](https://github.com/lockstride/dmatrix-extensions/releases/latest/download/dmatrix.pkg) | [dmatrix.msi](https://github.com/lockstride/dmatrix-extensions/releases/latest/download/dmatrix.msi) |
+| **Admin rights** | Asks for your password once, to install into `/Library/Application Support/dMatrix` | None — installs for your account only, into `%LOCALAPPDATA%\dMatrix` |
+| **What it set up** | A notification lists the clients, and the full result is in `/Library/Application Support/dMatrix/install.log` | Tick **Show what was set up** on the last screen to open `install.log` |
+| **Update** | Automatic, through the daily check; a newer download installs over it | Automatic, through the daily check; a newer download installs over it |
+| **Remove** | Run the three commands below | Uninstall **dMatrix Decision Capture** from **Settings → Apps** — it takes the plugin out of every client and the daily check with it |
+
+> **These builds are unsigned for now**, so the first launch is blocked once. On macOS,
+> open **System Settings → Privacy & Security** and click **Open Anyway** next to the note
+> about dmatrix.pkg. On Windows, click **More info → Run anyway** on the SmartScreen
+> prompt. The install commands above never hit either prompt.
+
+To remove everything the macOS package installed, run these in Terminal. The first is
+deliberately not `sudo` — the plugin and the daily check live in your account:
+
+```sh
+"/Library/Application Support/dMatrix/install.sh" --uninstall
+sudo pkgutil --forget com.dmatrix.extensions
+sudo rm -rf "/Library/Application Support/dMatrix"
+```
+
+Each release also publishes `SHA256SUMS.txt`; check a download against it with
+`shasum -a 256 dmatrix.pkg` or `Get-FileHash dmatrix.msi -Algorithm SHA256`.
+
+### Clients that live in your account
+
 The Claude app (including Cowork), claude.ai, and ChatGPT on the web install against your
-account rather than your machine, so no script can set them up — the command prints their
-manual steps, and the guides below have the full walkthrough.
+account rather than your machine, so neither the script nor the installers can set them
+up — both point you to their manual steps, and the guides below have the full walkthrough.
 
 ## Pick your assistant
 
@@ -98,6 +131,8 @@ Use it when:
 
 ```
 install.sh · install.ps1            # One-step installers (macOS/Linux, Windows) — see above
+installers/                         # dmatrix.pkg and dmatrix.msi sources — each wraps the matching script
+.github/workflows/release.yml       # Builds both installers and publishes them on a release tag
 shared/canonical-prompt/source.md   # The single source of truth (canonical behavior)
 .claude-plugin/ · .codex-plugin/    # Claude + ChatGPT/Codex plugin manifests; self-vending marketplace
 .mcp.json                           # Shared MCP wiring (one file, both plugins)
