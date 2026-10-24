@@ -57,8 +57,7 @@ target_home="$(dscl . -read "/Users/${target_user}" NFSHomeDirectory 2>/dev/null
 
 # Installer runs with a bare system PATH, and none of the clients live on it — `claude` is
 # usually in ~/.local/bin and `codex` in a Homebrew prefix. Without these the package would
-# faithfully report finding no clients on a Mac that has three. The inherited PATH stays in
-# front so a caller that supplies its own (CI, with stand-in CLIs) still wins.
+# faithfully report finding no clients on a Mac that has three.
 CLIENT_PATH="${PATH}:${target_home}/.local/bin:${target_home}/bin:/opt/homebrew/bin:/usr/local/bin"
 
 # -H so the script's ~ is the user's, not root's. The updater registration is deliberately
