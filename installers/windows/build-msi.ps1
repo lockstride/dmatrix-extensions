@@ -1,5 +1,5 @@
 <#
-    build-msi.ps1 - build dmatrix.msi, the Windows installer, unsigned.
+    build-msi.ps1 - build dmatrix-extensions.msi, the Windows installer, unsigned.
 
         pnpm extensions:build:msi
         pwsh -File installers/windows/build-msi.ps1 -Script install.ps1
@@ -11,7 +11,7 @@
     Parameters:
         -Script <path>   the install.ps1 to package (default: ./install.ps1)
         -Version <v>     the installer version (default: read from the sources below)
-        -Out <path>      where to write the MSI (default: dist/installers/dmatrix.msi)
+        -Out <path>      where to write the MSI (default: dist/installers/dmatrix-extensions.msi)
 
     The version defaults to PLUGIN_VERSION, read from
     packages/canonical-prompt/src/version.ts in this repo or .claude-plugin/plugin.json in
@@ -36,7 +36,7 @@ $ErrorActionPreference = 'Stop'
 
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 if (-not $Script) { $Script = 'install.ps1' }
-if (-not $Out) { $Out = Join-Path 'dist' (Join-Path 'installers' 'dmatrix.msi') }
+if (-not $Out) { $Out = Join-Path 'dist' (Join-Path 'installers' 'dmatrix-extensions.msi') }
 
 # The first version-looking value in a JSON or TS source is PLUGIN_VERSION in both layouts.
 # Case-insensitive: it is `PLUGIN_VERSION` in the TypeScript and `"version"` in the JSON.

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  dmatrix.msi — the Windows installer, per-user and unelevated.
+  dmatrix-extensions.msi — the Windows installer, per-user and unelevated.
 
   The payload is install.ps1 itself, the same file `irm … | iex` runs, installed to
   %LOCALAPPDATA%\dMatrix. Two custom actions bracket it: one runs it after install (which

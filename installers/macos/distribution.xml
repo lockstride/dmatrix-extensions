@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  productbuild distribution for dmatrix.pkg. __VERSION__ is substituted by build-pkg.sh
+  productbuild distribution for dmatrix-extensions.pkg. __VERSION__ is substituted by build-pkg.sh
   from PLUGIN_VERSION, so the package's version is the plugin's version and neither can
   drift from the other.
 

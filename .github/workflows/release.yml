@@ -32,7 +32,7 @@ concurrency:
 
 jobs:
   macos:
-    name: Build dmatrix.pkg
+    name: Build dmatrix-extensions.pkg
     runs-on: macos-latest
     permissions:
       contents: read
@@ -62,7 +62,7 @@ jobs:
         run: |
           set -eu
           sh installers/macos/build-pkg.sh
-          test -f dist/installers/dmatrix.pkg
+          test -f dist/installers/dmatrix-extensions.pkg
 
           if [ -z "${INSTALLER_P12}" ] || [ -z "${INSTALLER_IDENTITY}" ]; then
             echo "signed=false" >> "$GITHUB_OUTPUT"
@@ -95,36 +95,36 @@ jobs:
           security set-key-partition-list -S apple-tool:,apple: -s -k "$keychain_password" "$keychain"
 
           productsign --sign "$INSTALLER_IDENTITY" --keychain "$keychain" \
-            dist/installers/dmatrix.pkg dist/installers/dmatrix-signed.pkg
-          mv dist/installers/dmatrix-signed.pkg dist/installers/dmatrix.pkg
-          pkgutil --check-signature dist/installers/dmatrix.pkg
+            dist/installers/dmatrix-extensions.pkg dist/installers/dmatrix-extensions-signed.pkg
+          mv dist/installers/dmatrix-extensions-signed.pkg dist/installers/dmatrix-extensions.pkg
+          pkgutil --check-signature dist/installers/dmatrix-extensions.pkg
 
           if [ -n "${NOTARY_KEY}" ] && [ -n "${NOTARY_KEY_ID}" ] && [ -n "${NOTARY_ISSUER_ID}" ]; then
             printf '%s' "$NOTARY_KEY" | base64 --decode > "${RUNNER_TEMP}/notary.p8"
-            xcrun notarytool submit dist/installers/dmatrix.pkg \
+            xcrun notarytool submit dist/installers/dmatrix-extensions.pkg \
               --key "${RUNNER_TEMP}/notary.p8" \
               --key-id "$NOTARY_KEY_ID" \
               --issuer "$NOTARY_ISSUER_ID" \
               --wait
             rm -f "${RUNNER_TEMP}/notary.p8"
             # Stapling is what lets a Mac verify the notarization offline.
-            xcrun stapler staple dist/installers/dmatrix.pkg
-            xcrun stapler validate dist/installers/dmatrix.pkg
+            xcrun stapler staple dist/installers/dmatrix-extensions.pkg
+            xcrun stapler validate dist/installers/dmatrix-extensions.pkg
             echo "signed=true" >> "$GITHUB_OUTPUT"
           else
             echo "::warning::Signed but not notarized — no notarytool API key configured."
             echo "signed=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Upload dmatrix.pkg
+      - name: Upload dmatrix-extensions.pkg
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: dmatrix-pkg
-          path: dist/installers/dmatrix.pkg
+          name: dmatrix-extensions-pkg
+          path: dist/installers/dmatrix-extensions.pkg
           if-no-files-found: error
 
   windows:
-    name: Build dmatrix.msi
+    name: Build dmatrix-extensions.msi
     runs-on: windows-latest
     permissions:
       contents: read
@@ -137,7 +137,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Build dmatrix.msi
+      - name: Build dmatrix-extensions.msi
         id: build
         shell: pwsh
         env:
@@ -145,7 +145,7 @@ jobs:
         run: |
           & pwsh -NoProfile -File installers/windows/build-msi.ps1
           if ($LASTEXITCODE -ne 0) { throw "build-msi exited $LASTEXITCODE" }
-          if (-not (Test-Path 'dist/installers/dmatrix.msi')) { throw 'no MSI was produced' }
+          if (-not (Test-Path 'dist/installers/dmatrix-extensions.msi')) { throw 'no MSI was produced' }
           # The sign step below is gated on the same secret, so this output and that
           # condition cannot disagree about whether the asset ended up signed.
           if ($env:SIGNING_ENDPOINT) {
@@ -159,7 +159,7 @@ jobs:
       # certificates, so there is no .pfx in a secret to leak and no private key on the
       # runner. The vendor's own action wraps signtool with their signing dlib; doing it by
       # hand means reimplementing that, so this is the one third-party action here.
-      - name: Sign dmatrix.msi
+      - name: Sign dmatrix-extensions.msi
         if: steps.build.outputs.signed == 'true'
         uses: azure/trusted-signing-action@c7ab2a863ab5f9a846ddb8265964877ef296ee82 # v2.0.0
         with:
@@ -175,11 +175,11 @@ jobs:
           timestamp-rfc3161: http://timestamp.acs.microsoft.com
           timestamp-digest: SHA256
 
-      - name: Upload dmatrix.msi
+      - name: Upload dmatrix-extensions.msi
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: dmatrix-msi
-          path: dist/installers/dmatrix.msi
+          name: dmatrix-extensions-msi
+          path: dist/installers/dmatrix-extensions.msi
           if-no-files-found: error
 
   publish:
@@ -196,16 +196,16 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Download dmatrix.pkg
+      - name: Download dmatrix-extensions.pkg
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
-          name: dmatrix-pkg
+          name: dmatrix-extensions-pkg
           path: assets
 
-      - name: Download dmatrix.msi
+      - name: Download dmatrix-extensions.msi
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
-          name: dmatrix-msi
+          name: dmatrix-extensions-msi
           path: assets
 
       # decide.zip has the same shape the renderer produces — the decide/ folder at the
@@ -219,7 +219,8 @@ jobs:
           find skills/decide -exec touch -t 202001010000 {} +
           (cd skills && zip -r -X "${GITHUB_WORKSPACE}/assets/decide.zip" decide -x 'decide/README.md')
           cd assets
-          sha256sum dmatrix.pkg dmatrix.msi install.sh install.ps1 decide.zip > SHA256SUMS.txt
+          sha256sum dmatrix-extensions.pkg dmatrix-extensions.msi install.sh install.ps1 decide.zip \
+            > SHA256SUMS.txt
           cat SHA256SUMS.txt
 
       - name: Write the release notes
@@ -237,11 +238,11 @@ jobs:
             printf 'One command, every AI client on the machine:\n\n'
             printf '```sh\ncurl -fsSL https://www.dmatrix.com/install.sh | sh\n```\n\n'
             printf '```powershell\nirm https://www.dmatrix.com/install.ps1 | iex\n```\n\n'
-            printf 'Prefer not to use a terminal? Download `dmatrix.pkg` (macOS) or '
-            printf '`dmatrix.msi` (Windows) below.\n\n'
+            printf 'Prefer not to use a terminal? Download `dmatrix-extensions.pkg` (macOS) or '
+            printf '`dmatrix-extensions.msi` (Windows) below.\n\n'
             printf 'Verify a download against `SHA256SUMS.txt`:\n\n'
-            printf '```sh\nshasum -a 256 dmatrix.pkg\n```\n\n'
-            printf '```powershell\nGet-FileHash dmatrix.msi -Algorithm SHA256\n```\n'
+            printf '```sh\nshasum -a 256 dmatrix-extensions.pkg\n```\n\n'
+            printf '```powershell\nGet-FileHash dmatrix-extensions.msi -Algorithm SHA256\n```\n'
           } > notes.md
           if [ "$PKG_SIGNED" != "true" ] || [ "$MSI_SIGNED" != "true" ]; then
             {

@@ -1,8 +1,8 @@
 #!/bin/sh
-# build-pkg.sh — build dmatrix.pkg, the macOS installer, unsigned.
+# build-pkg.sh — build dmatrix-extensions.pkg, the macOS installer, unsigned.
 #
 #   pnpm extensions:build:pkg
-#   sh installers/macos/build-pkg.sh --script install.sh --out dist/installers/dmatrix.pkg
+#   sh installers/macos/build-pkg.sh --script install.sh --out dist/installers/dmatrix-extensions.pkg
 #
 # The package's payload is install.sh itself — the same file the one-step command runs, not
 # a copy of its logic — installed to /Library/Application Support/dMatrix/ and executed by
@@ -11,7 +11,7 @@
 # Options:
 #   --script <path>    the install.sh to package (default: ./install.sh)
 #   --version <v>      the package version (default: read from the sources below)
-#   --out <path>       where to write the package (default: dist/installers/dmatrix.pkg)
+#   --out <path>       where to write the package (default: dist/installers/dmatrix-extensions.pkg)
 #   -h, --help         this text
 #
 # The version defaults to PLUGIN_VERSION, read from packages/canonical-prompt/src/version.ts
@@ -69,7 +69,7 @@ while [ $# -gt 0 ]; do
 done
 
 [ -n "$script_path" ] || script_path="install.sh"
-[ -n "$out_path" ] || out_path="dist/installers/dmatrix.pkg"
+[ -n "$out_path" ] || out_path="dist/installers/dmatrix-extensions.pkg"
 
 # The first "version": in a JSON or TS source is PLUGIN_VERSION in both layouts.
 read_version() {
