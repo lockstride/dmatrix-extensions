@@ -1,6 +1,6 @@
 {
   "name": "dmatrix",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "dMatrix decision-capture Skill for Chat-to-Matrix — structured decision matrices from natural conversation",
   "author": {
     "name": "Lockstride",
