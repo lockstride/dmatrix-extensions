@@ -17,7 +17,7 @@ for each. Re-run it any time to update every copy.
 **macOS and Linux**
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/lockstride/dmatrix-extensions/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/oxford-heavy/dmatrix-extensions/main/install.sh | sh
 ```
 
 Want to see what it would do first? Add `-s -- --dry-run`. Other options: `--only
@@ -27,7 +27,7 @@ only inside the clients' own homes.
 **Windows** (PowerShell 5.1 or 7 — no WSL)
 
 ```powershell
-irm https://raw.githubusercontent.com/lockstride/dmatrix-extensions/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/oxford-heavy/dmatrix-extensions/main/install.ps1 | iex
 ```
 
 Piping into `iex` can't pass parameters, so the options come from environment variables
@@ -37,13 +37,13 @@ work as `-DryRun`, `-Only`, `-Ref`, `-Uninstall`. No elevation needed.
 
 ### No terminal? Download the installer
 
-The installers on the [latest release](https://github.com/lockstride/dmatrix-extensions/releases/latest)
+The installers on the [latest release](https://github.com/oxford-heavy/dmatrix-extensions/releases/latest)
 are the one-step script in package form: same steps, same daily check that keeps the
 plugin current, started with a double-click.
 
 | | macOS | Windows |
 |---|---|---|
-| **Download** | [dmatrix-extensions.pkg](https://github.com/lockstride/dmatrix-extensions/releases/latest/download/dmatrix-extensions.pkg) | [dmatrix-extensions.msi](https://github.com/lockstride/dmatrix-extensions/releases/latest/download/dmatrix-extensions.msi) |
+| **Download** | [dmatrix-extensions.pkg](https://github.com/oxford-heavy/dmatrix-extensions/releases/latest/download/dmatrix-extensions.pkg) | [dmatrix-extensions.msi](https://github.com/oxford-heavy/dmatrix-extensions/releases/latest/download/dmatrix-extensions.msi) |
 | **Admin rights** | Asks for your password once, to install into `/Library/Application Support/dMatrix` | None — installs for your account only, into `%LOCALAPPDATA%\dMatrix` |
 | **What it set up** | A notification lists the clients, and the full result is in `/Library/Application Support/dMatrix/install.log` | Tick **Show what was set up** on the last screen to open `install.log` |
 | **Update** | Automatic, through the daily check; a newer download installs over it | Automatic, through the daily check; a newer download installs over it |
@@ -168,5 +168,5 @@ not grant any right to use. See [LICENSE](LICENSE) for the full terms.
 
 ## Support
 
-- Issues: [github.com/lockstride/dmatrix-extensions/issues](https://github.com/lockstride/dmatrix-extensions/issues)
+- Issues: [github.com/oxford-heavy/dmatrix-extensions/issues](https://github.com/oxford-heavy/dmatrix-extensions/issues)
 - dMatrix account & app: [dmatrix.com](https://dmatrix.com)

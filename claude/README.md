@@ -32,7 +32,7 @@ dMatrix MCP server automatically.
 In Claude Code, run:
 
 ```
-/plugin marketplace add lockstride/dmatrix-extensions
+/plugin marketplace add oxford-heavy/dmatrix-extensions
 /plugin install dmatrix@dmatrix-extensions
 ```
 
@@ -47,7 +47,7 @@ dMatrix. (Prefer a menu? Just run `/plugin` and browse the **Discover** tab.)
 ### No terminal? Use the installer
 
 The macOS package on the
-[latest release](https://github.com/lockstride/dmatrix-extensions/releases/latest/download/dmatrix-extensions.pkg)
+[latest release](https://github.com/oxford-heavy/dmatrix-extensions/releases/latest/download/dmatrix-extensions.pkg)
 does the same thing by double-click: it sets up every AI client on the Mac, shows you what
 it did, and adds a daily check that keeps the plugin current. It's the
 [one-step script](../README.md#one-step-install) in package form — same steps, no terminal.
@@ -80,7 +80,7 @@ reach dMatrix.
 1. Open **Customize → Plugins** from the left sidebar.
 2. Click **Add → Add marketplace → Add from a repository**.
 3. Paste this repository URL, then add it — Claude syncs the marketplace for you:
-   `https://github.com/lockstride/dmatrix-extensions`
+   `https://github.com/oxford-heavy/dmatrix-extensions`
 4. Once it's added, open the **Personal** tab to see the available plugins.
 5. Find the **dMatrix Decision Capture** card, click **Install**, and accept the
    trust prompt.
@@ -108,7 +108,7 @@ That's the whole setup. You can manage or remove the plugin anytime under
 If you'd rather not use a plugin, add the same two parts in **Settings**:
 
 **Part 1 — add the behavior:**
-1. Download **[`decide.zip`](https://github.com/lockstride/dmatrix-extensions/releases/latest/download/decide.zip)**
+1. Download **[`decide.zip`](https://github.com/oxford-heavy/dmatrix-extensions/releases/latest/download/decide.zip)**
    from the latest release — it's already the right shape (the `decide/` folder at the
    zip's top level with `SKILL.md` inside it). Building from a clone instead? Zip **the
    folder itself** (`skills/decide/`), *not* the files loose at the root.

@@ -69,7 +69,7 @@ set -eu
 # copy, so this marker is what tells the two cases apart.
 # dmatrix-extensions-install-script
 
-REPO="${DMATRIX_EXTENSIONS_REPO:-lockstride/dmatrix-extensions}"
+REPO="${DMATRIX_EXTENSIONS_REPO:-oxford-heavy/dmatrix-extensions}"
 REF="${DMATRIX_EXTENSIONS_REF:-main}"
 MARKETPLACE="dmatrix-extensions"
 PLUGIN="dmatrix"
@@ -78,8 +78,8 @@ PLUGIN_ID="${PLUGIN}@${MARKETPLACE}"
 BUNDLE_PATH="google/antigravity/dmatrix"
 CACHE_DIR="${XDG_CACHE_HOME:-${HOME}/.cache}/dmatrix-extensions"
 
-CLAUDE_MANUAL="https://github.com/lockstride/dmatrix-extensions/blob/main/claude/README.md"
-OPENAI_MANUAL="https://github.com/lockstride/dmatrix-extensions/blob/main/openai/README.md"
+CLAUDE_MANUAL="https://github.com/oxford-heavy/dmatrix-extensions/blob/main/claude/README.md"
+OPENAI_MANUAL="https://github.com/oxford-heavy/dmatrix-extensions/blob/main/openai/README.md"
 
 UPDATER_LABEL="com.dmatrix.extensions-updater"
 UPDATER_UNIT="dmatrix-extensions-updater"

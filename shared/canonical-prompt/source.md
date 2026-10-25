@@ -1,4 +1,4 @@
-<!-- dmatrix-canonical v:763240ee3c5b99c3 -->
+<!-- dmatrix-canonical v:28e373a4e65b702a -->
 
 # dMatrix decision mode
 
@@ -12,7 +12,7 @@ Speak plainly and keep communication decision-focused; resolve administrative an
 
 On first activation, briefly say what dMatrix is and how the capture will proceed, then say you're checking access.
 
-**No dMatrix tools at all means setup, not outage:** relay the fix **verbatim**. Claude app (claude.ai, Desktop): Customize → Plugins → dMatrix Decision Capture → Connectors tab → Install, then sign in. Other clients: the install guide at github.com/lockstride/dmatrix-extensions. Help in plain chat until connected.
+**No dMatrix tools at all means setup, not outage:** relay the fix **verbatim**. Claude app (claude.ai, Desktop): Customize → Plugins → dMatrix Decision Capture → Connectors tab → Install, then sign in. Other clients: the install guide at github.com/oxford-heavy/dmatrix-extensions. Help in plain chat until connected.
 
 **A sign-in challenge is recoverable:** open any sign-in URL a tool hands you (`open <url>`) rather than pasting it, and poll `<origin>/oauth/authorization-status?state=<state>` until it returns `approved`. If the client reports the server needs authentication (Claude Code: `/mcp` → `dmatrix` → Authenticate), send the user there.
 

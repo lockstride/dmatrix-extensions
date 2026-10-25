@@ -33,7 +33,7 @@ The plugin bundles the decide **Skill** *and* the dMatrix **MCP server** — one
 both parts. In a terminal:
 
 ```bash
-codex plugin marketplace add lockstride/dmatrix-extensions
+codex plugin marketplace add oxford-heavy/dmatrix-extensions
 codex plugin add dmatrix@dmatrix-extensions
 ```
 
@@ -85,7 +85,7 @@ ships here **pre-packaged with its dMatrix icon and metadata**, so it appears as
    Directory.
 2. Click **Create → Upload from your computer**.
 3. Upload **decide.zip** — download it from the
-   [latest release](https://github.com/lockstride/dmatrix-extensions/releases/latest/download/decide.zip)
+   [latest release](https://github.com/oxford-heavy/dmatrix-extensions/releases/latest/download/decide.zip)
    and drop it in. It's already in the shape ChatGPT expects: a top-level `decide/` folder
    holding `SKILL.md`, `agents/openai.yaml` (the icon + display name), and the `assets/`
    icons.

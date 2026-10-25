@@ -7,14 +7,14 @@
     "url": "https://lockstride.ai"
   },
   "metadata": {
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "Single-plugin marketplace for dMatrix Decision Capture — the plugin lives at this repo's root"
   },
   "plugins": [
     {
       "name": "dmatrix",
       "source": "./",
-      "version": "1.1.1",
+      "version": "1.1.2",
       "description": "dMatrix decision-capture Skill for Chat-to-Matrix — structured decision matrices from natural conversation",
       "category": "productivity",
       "keywords": [

@@ -2,8 +2,8 @@
 name: decide
 description: "dMatrix decision-capture mode. Trigger whenever the conversation is decision-shaped — the user is choosing between alternatives, weighing trade-offs, evaluating options against criteria, or asking for a recommendation ('what should we use for X', 'which vendor/tool/platform', 'recommend something for…') — even if they never mention dMatrix, a matrix, or capture. On load, follow the canonical guidance: offer capture with one brief suggestion, wait for go-ahead, never auto-populate. Also runs as /decide."
 argument-hint: "[matrix URL | id | name — optional: attach an existing Matrix]"
-version_hash: 763240ee3c5b99c3
-plugin_version: 1.1.1
+version_hash: 28e373a4e65b702a
+plugin_version: 1.1.2
 ---
 
 ## Attaching a Matrix on invocation
@@ -15,7 +15,7 @@ plugin_version: 1.1.1
 
 Argument: $ARGUMENTS
 
-<!-- dmatrix-canonical-core v:763240ee3c5b99c3 -->
+<!-- dmatrix-canonical-core v:28e373a4e65b702a -->
 # dMatrix decision mode
 
 dMatrix captures a choice as a structured, auditable Matrix: Options, Criteria, weights, scores, provenance, and supporting content. Use the dMatrix tools; their schemas are the source of truth.
@@ -28,7 +28,7 @@ Speak plainly and keep communication decision-focused; resolve administrative an
 
 On first activation, briefly say what dMatrix is and how the capture will proceed, then say you're checking access.
 
-**No dMatrix tools at all means setup, not outage:** relay the fix **verbatim**. Claude app (claude.ai, Desktop): Customize → Plugins → dMatrix Decision Capture → Connectors tab → Install, then sign in. Other clients: the install guide at github.com/lockstride/dmatrix-extensions. Help in plain chat until connected.
+**No dMatrix tools at all means setup, not outage:** relay the fix **verbatim**. Claude app (claude.ai, Desktop): Customize → Plugins → dMatrix Decision Capture → Connectors tab → Install, then sign in. Other clients: the install guide at github.com/oxford-heavy/dmatrix-extensions. Help in plain chat until connected.
 
 **A sign-in challenge is recoverable:** open any sign-in URL a tool hands you (`open <url>`) rather than pasting it, and poll `<origin>/oauth/authorization-status?state=<state>` until it returns `approved`. If the client reports the server needs authentication (Claude Code: `/mcp` → `dmatrix` → Authenticate), send the user there.
 

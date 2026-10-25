@@ -91,7 +91,7 @@ if (-not $Update -and (Test-EnvSwitch $env:DMATRIX_UPDATE)) { $Update = $true }
 $script:Repo = if ($env:DMATRIX_EXTENSIONS_REPO) {
     $env:DMATRIX_EXTENSIONS_REPO
 } else {
-    'lockstride/dmatrix-extensions'
+    'oxford-heavy/dmatrix-extensions'
 }
 $script:Ref = if ($Ref) { $Ref } else { 'main' }
 $script:Marketplace = 'dmatrix-extensions'
@@ -120,8 +120,8 @@ $script:TaskName = 'dMatrixExtensionsUpdater'
 # exist on Windows PowerShell 5.1, and Set-StrictMode makes reading it an error there.
 $script:OnWindows = ($env:OS -eq 'Windows_NT')
 
-$script:ClaudeManual = 'https://github.com/lockstride/dmatrix-extensions/blob/main/claude/README.md'
-$script:OpenAiManual = 'https://github.com/lockstride/dmatrix-extensions/blob/main/openai/README.md'
+$script:ClaudeManual = 'https://github.com/oxford-heavy/dmatrix-extensions/blob/main/claude/README.md'
+$script:OpenAiManual = 'https://github.com/oxford-heavy/dmatrix-extensions/blob/main/openai/README.md'
 
 $script:DryRunMode = [bool]$DryRun
 $script:UninstallMode = [bool]$Uninstall
